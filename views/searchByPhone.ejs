@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Search By Name</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="container">
+      <fieldset>
+        <form action="/phone" method="post">
+          <input name="phoneNumber" type="text" class="ghost-input" placeholder="Enter Phone Number" required>
+          <input type="submit" class="ghost-button" value="Get Data">
+        </form>
+        <% if(phoneData !== null){ %>
+          <p><%= phoneData %></p>
+        <% } %>
+
+        <% if(error !== null){ %>
+          <p><%= error %></p>
+        <% } %>
+      </fieldset>
+    </div>
+  </body>
+</html>
+
+<!-- {
+    "data": {
+      "address": "4602 E 10th Ave",
+      "carrier": {
+        "id": "9417",
+        "name": "AT&T Southeast"
+      },
+      "carrier_o": {
+        "id": "9417",
+        "name": "AT&T Southeast"
+      },
+      "cnam": "FONTES,LUIS E",
+      "expanded_name": {
+        "first": "Luis",
+        "last": "Fontes",
+        "middle": "E"
+      },
+      "gender": "M",
+      "line_provider": {
+        "id": "635C",
+        "name": "AT+T Local"
+      },
+      "linetype": "landline",
+      "location": {
+        "city": "Hialeah",
+        "country": "US",
+        "geo": {
+          "latitude": "25.86471000000000",
+          "longitude": "-80.26314000000001"
+        },
+        "state": "FL",
+        "zip": "33013"
+      },
+      "name": "Luis E Fontes"
+    },
+    "invalid": [],
+    "missed": [
+      "profile",
+      "image"
+    ],
+    "number": "+13056887708",
+    "pricing": {
+      "breakdown": {
+        "address": -0.08,
+        "carrier": -0.004,
+        "carrier_o": 0,
+        "cnam": -0.005,
+        "expanded_name": 0,
+        "gender": -0.001,
+        "line_provider": -0.005,
+        "linetype": -0.001,
+        "location": 0,
+        "name": -0.01
+      },
+      "total": -0.106
+    },
+    "status": true,
+    "type": "person"
+  }
+   -->
