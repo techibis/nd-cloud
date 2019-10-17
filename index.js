@@ -1,23 +1,20 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const request = require('request');
-const parser = require('xml2json');
+// const request = require('request');
 const app = express();
 const port = process.env.PORT || 3000;
 
 const database = require('./databaseConfig');
 const getPersonData = require('./searchByName');
 const getPhoneData = require('./searchByPhone');
+const getEmailData = require('./searchByEmail');
 
 // const apiKey = '8w41c2o31jhnuse1965ay4';
-const apiKey = 'px1e1vr118sjti2bu7c31q3';
-const account_sid='ACcd28b8837adf4d3ca0141ef5ad3fdec6';
-const auth_token='AUae5b345b940447be9d7cab5ebe33a7fa';
-
-let jsonData;
-let data;
-let phoneData;
+// const apiKey = 'px1e1vr118sjti2bu7c31q3';
+// const account_sid='ACcd28b8837adf4d3ca0141ef5ad3fdec6';
+// const auth_token='AUae5b345b940447be9d7cab5ebe33a7fa';
+// const email_api = 'TuqyrVvTwvq2chF9NFWNOOMRqWeZ4ZlF';
 
 
 
@@ -33,23 +30,55 @@ app.get('/', function (req, res) {
 app.post('/', function (req, res) {
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
-  let url = `https://completecriminalchecks.com/api/xml/?firstname=${firstName}&lastname=${lastName}&apikey=${apiKey}`;
-
-  request({url: url,json: true}, function (err, response, body) {
-    if(err){
-      res.render('index', {data: null, error: 'Error, please try again'});
-    } else {
-      jsonData = parser.toJson(body);
-      data = JSON.parse(jsonData);
-
-     database.insert_raw_json_name(jsonData);
-     getPersonData.getDataByName(data);
-
-     res.render('index', {data: jsonData, error: null});
+  database.findNameInDatabase(firstName,lastName, function(response){
+    if(response.length>0){
+      console.log(response);
+      database.searchedPerson(firstName,lastName,'','');
+    }else{
+      database.searchedPerson(firstName,lastName,'','');
+      getPersonData.getDataByName(firstName,lastName,res);
     }
   });
 })
 
+
+app.get('/email', function (req, res) {
+  res.render('searchByEmail', {emailData: null, error: null});
+})
+
+// app.post('/email', function (req, res) {
+//   let email = req.body.email;
+//   let api_key = 'ca414dccdf654cd4b742dc890ae64273';
+//   let url = `https://api.ekata.com/4.1/email?api_key=${api_key}&email_address=${email}`;
+
+//   request({url: url,json: true}, function (err, response, body) {
+//     if(err){
+//       res.render('searchByEmail', {emailData: null, error: 'Error, please try again'});
+//     } else {
+//       emailData = body;
+//       emailData_str = JSON.stringify(emailData);
+
+//       // database.insert_raw_json_phone(phoneData_str);
+//       // getPhoneData.getDataByPhone(phoneData);
+
+//       res.render('searchByEmail', {emailData: emailData_str, error: null});
+//     }
+//   });
+// })
+
+
+app.post('/email', function (req, res) {
+  let email = req.body.email;
+  database.findEmailInDatabase(email, function(response){
+    if(response.length>0){
+      console.log(response);
+      database.searchedPerson('','',email,'');
+    }else{
+      database.searchedPerson('','',email,'');
+      getEmailData.getDataByEmail(email,res);
+    }
+  });
+})
 
 app.get('/phone', function (req, res) {
   res.render('searchByPhone', {phoneData: null, error: null});
@@ -57,20 +86,13 @@ app.get('/phone', function (req, res) {
 
 app.post('/phone', function (req, res) {
   let phoneNumber = req.body.phoneNumber;
-  let url = `https://api.everyoneapi.com/v1/phone/${phoneNumber}?account_sid=${account_sid}&auth_token=${auth_token}&data=name,address,location,cnam,gender,linetype,image,line_provider,profile`;
-  // let url = `https://api.everyoneapi.com/v1/phone/${phoneNumber}?account_sid=${account_sid}&auth_token=${auth_token}&data=cnam`;
-
-  request({url: url,json: true}, function (err, response, body) {
-    if(err){
-      res.render('searchByPhone', {phoneData: null, error: 'Error, please try again'});
-    } else {
-      phoneData = body;
-      phoneData_str = JSON.stringify(phoneData);
-
-      database.insert_raw_json_phone(phoneData_str);
-      getPhoneData.getDataByPhone(phoneData);
-
-      res.render('searchByPhone', {PhoneData: phoneData_str, error: null});
+  database.findPhoneInDatabase(phone, function(response){
+    if(response.length>0){
+      console.log(response);
+      database.searchedPerson('','','',phone);
+    }else{
+      database.searchedPerson('','','',phone);
+      getPhoneData.getDataByPhone(phoneNumber,res);
     }
   });
 })
@@ -79,4 +101,3 @@ app.post('/phone', function (req, res) {
 app.listen(port, function () {
   console.log('Net Detective app listening on port 3000!')
 })
-
