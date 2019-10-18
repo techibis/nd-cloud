@@ -1,7 +1,8 @@
 const request = require('request');
 const parser = require('xml2json');
 const database = require('./databaseConfig');
-const apiKey = 'px1e1vr118sjti2bu7c31q3';
+// const apiKey = 'px1e1vr118sjti2bu7c31q3';
+const apiKey = '1623ygp2ht1c1s9lrq7be8'; //mark
 
 let jsonData;
 let data;

@@ -24,8 +24,24 @@ function searchedPerson(firstName, lastName, email, phone){
     });
 }
 
+function updateSearchedPersonByEmail(firstName, lastName, email, phone){
+    let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where email='"+email+"'";
+    con.query(sql, function (err, result) {
+    if (err) {throw err;}
+    console.log('1 record updated');
+    });
+}
+
+function updateSearchedPersonByPhone(firstName, lastName, email, phone){
+    let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where phone='"+phone+"'";
+    con.query(sql, function (err, result) {
+    if (err) {throw err;}
+    console.log('1 record updated');
+    });
+}
+
 function findNameInDatabase(firstName, lastName,callback) {
-    let sql = `SELECT * from searched_person where first_name='${firstName}' and last_name='${lastName}'`;
+    let sql = "SELECT * from searched_person where first_name='"+firstName+"' and last_name= '"+lastName+"'";
     con.query(sql, function (err, result) {
         if (err) throw err;
         return callback(result);
@@ -33,7 +49,7 @@ function findNameInDatabase(firstName, lastName,callback) {
 }
 
 function findEmailInDatabase(email,callback) {
-    let sql = `SELECT * from searched_person where email='${email}'`;
+    let sql = "SELECT * from searched_person where email='"+email+"'";
     con.query(sql, function (err, result) {
         if (err) throw err;
         return callback(result);
@@ -41,17 +57,15 @@ function findEmailInDatabase(email,callback) {
 }
 
 function findPhoneInDatabase(phone,callback) {
-    let sql = `SELECT * from searched_person where phone='${phone}'`;
+    let sql = "SELECT * from searched_person where phone=email='"+phone+"'";
     con.query(sql, function (err, result) {
         if (err) throw err;
         return callback(result);
     });
 }
 
-
-
 function insert_raw_json_name(jsonData){
-    let sql = "INSERT INTO raw_json_name (person_data_json,data_source,searched_person_id,time) VALUES ('"+jsonData+"','Complete Criminal Checks','"+searchedPersonId+"', '"+currentDatetime+"')";
+    let sql = "INSERT INTO raw_json_name (person_data_json,data_source,searched_person_id) VALUES ('"+jsonData+"','Complete Criminal Checks','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
@@ -83,7 +97,7 @@ function insert_phone_data(phoneData_address,phoneData_profile,phoneData_cnam,ph
 }
 
 function insert_raw_json_email(emailData){
-    let sql = "INSERT INTO raw_json_email (email_data_json,data_source,searched_person_id,time) VALUES ('"+emailData+"','Email Address Lookup','"+searchedPersonId+"', '"+currentDatetime+"')";
+    let sql = "INSERT INTO raw_json_email (email_data_json,data_source,searched_person_id) VALUES ('"+emailData+"','Email Address Lookup','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("1 record inserted");
@@ -98,6 +112,26 @@ function insert_email_data(emailData_firstName,emailData_lastName,emailData_full
     });
 }
 
+
+function showSearchedPersonData(firstName,lastName,callback){
+    let sql = "SELECT * from searched_person where first_name = '"+firstName+"' and last_name= '"+lastName+"'";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        return callback(result);
+    });
+}
+
+function showPersonsData(id,callback){
+    let sql = "SELECT * from persons where searched_person_id= '"+id+"'";
+    
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        if (result.length>0){
+            return callback(result);
+        }
+    });
+}
+
 module.exports ={
     searchedPerson,
     insert_raw_json_name,
@@ -108,5 +142,9 @@ module.exports ={
     insert_email_data,
     findNameInDatabase,
     findEmailInDatabase,
-    findPhoneInDatabase
+    findPhoneInDatabase,
+    updateSearchedPersonByEmail,
+    updateSearchedPersonByPhone,
+    showSearchedPersonData,
+    showPersonsData
 };

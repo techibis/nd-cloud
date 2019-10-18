@@ -10,6 +10,11 @@ const getPersonData = require('./searchByName');
 const getPhoneData = require('./searchByPhone');
 const getEmailData = require('./searchByEmail');
 
+let emailData_firstName;
+let emailData_lastName;
+let phoneData_firstName;
+let phoneData_lastName;
+
 // const apiKey = '8w41c2o31jhnuse1965ay4';
 // const apiKey = 'px1e1vr118sjti2bu7c31q3';
 // const account_sid='ACcd28b8837adf4d3ca0141ef5ad3fdec6';
@@ -30,10 +35,10 @@ app.get('/', function (req, res) {
 app.post('/', function (req, res) {
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
+
   database.findNameInDatabase(firstName,lastName, function(response){
     if(response.length>0){
       console.log(response);
-      database.searchedPerson(firstName,lastName,'','');
     }else{
       database.searchedPerson(firstName,lastName,'','');
       getPersonData.getDataByName(firstName,lastName,res);
@@ -44,6 +49,33 @@ app.post('/', function (req, res) {
 
 app.get('/email', function (req, res) {
   res.render('searchByEmail', {emailData: null, error: null});
+})
+
+
+app.post('/email', function (req, res) {
+  let email = req.body.email;
+  database.findEmailInDatabase(email, function(response){
+    if(response.length>0){
+      console.log(response);
+    }else{
+      database.searchedPerson('','',email,'');
+      getEmailData.getDataByEmail(email,res);
+    }
+    emailData_firstName = response[0].first_name;
+    emailData_lastName = response[0].last_name;
+    database.showSearchedPersonData(emailData_firstName,emailData_lastName, function(result){
+      result_str=JSON.stringify(result);
+      for (let i=0;i<result.length;i++){
+        id = result[i].id;
+        console.log(id);
+        database.showPersonsData(id, function(data){
+          data_str=JSON.stringify(data);
+          console.log(data);
+          res.render('teasure', {data:data_str, result:result_str});
+        })
+      }
+    })
+  });
 })
 
 // app.post('/email', function (req, res) {
@@ -67,18 +99,6 @@ app.get('/email', function (req, res) {
 // })
 
 
-app.post('/email', function (req, res) {
-  let email = req.body.email;
-  database.findEmailInDatabase(email, function(response){
-    if(response.length>0){
-      console.log(response);
-      database.searchedPerson('','',email,'');
-    }else{
-      database.searchedPerson('','',email,'');
-      getEmailData.getDataByEmail(email,res);
-    }
-  });
-})
 
 app.get('/phone', function (req, res) {
   res.render('searchByPhone', {phoneData: null, error: null});
@@ -89,7 +109,6 @@ app.post('/phone', function (req, res) {
   database.findPhoneInDatabase(phone, function(response){
     if(response.length>0){
       console.log(response);
-      database.searchedPerson('','','',phone);
     }else{
       database.searchedPerson('','','',phone);
       getPhoneData.getDataByPhone(phoneNumber,res);

@@ -1,8 +1,10 @@
 const request = require('request');
 const database = require('./databaseConfig');
 const getPersonData = require('./searchByName');
-const account_sid='ACcd28b8837adf4d3ca0141ef5ad3fdec6';
-const auth_token='AUae5b345b940447be9d7cab5ebe33a7fa';
+// const account_sid='ACcd28b8837adf4d3ca0141ef5ad3fdec6';
+// const auth_token='AUae5b345b940447be9d7cab5ebe33a7fa';
+const account_sid='ACcca8346a7f804a309e8f465d29ce3ef1';   //mark
+const auth_token='AUd276d5abef1748fbad0b5763697154b5';    //mark
 
 let phoneData;
 let phoneData_str;
@@ -34,22 +36,32 @@ function getDataByPhone(phoneNumber,res){
 
         if ('data' in phoneData){
         
-            phoneData_address = phoneData.data.address;
-            // phoneData_profile = phoneData.data.missed[0];
-            phoneData_cnam = phoneData.data.cnam;
-            phoneData_firstname = phoneData.data.expanded_name.first;
-            phoneData_lastname = phoneData.data.expanded_name.last;
-            phoneData_middlename = phoneData.data.expanded_name.middle;
-            phoneData_gender = phoneData.data.gender;
-            // phoneData_image = phoneData.data.missed[1];
-            phoneData_linetype = phoneData.data.linetype;
-            phoneData_city = phoneData.data.location.city;
-            phoneData_country = phoneData.data.location.country;
-            phoneData_state = phoneData.data.location.state;
-            phoneData_zip = phoneData.data.location.zip;
+          phoneData_address = phoneData.data.address;
+          // phoneData_profile = phoneData.data.missed[0];
+          phoneData_cnam = phoneData.data.cnam;
+          phoneData_firstname = phoneData.data.expanded_name.first;
+          phoneData_lastname = phoneData.data.expanded_name.last;
+          phoneData_middlename = phoneData.data.expanded_name.middle;
+          phoneData_gender = phoneData.data.gender;
+          // phoneData_image = phoneData.data.missed[1];
+          phoneData_linetype = phoneData.data.linetype;
+          phoneData_city = phoneData.data.location.city;
+          phoneData_country = phoneData.data.location.country;
+          phoneData_state = phoneData.data.location.state;
+          phoneData_zip = phoneData.data.location.zip;
 
-            database.insert_phone_data(phoneData_address,phoneData_profile,phoneData_cnam,phoneData_firstname,phoneData_lastname,phoneData_middlename,phoneData_gender,phoneData_image,phoneData_linetype,phoneData_city,phoneData_country,phoneData_state,phoneData_zip)
-            getPersonData.getDataByName(phoneData_firstname, phoneData_lastname);
+          database.insert_phone_data(phoneData_address,phoneData_profile,phoneData_cnam,phoneData_firstname,phoneData_lastname,phoneData_middlename,phoneData_gender,phoneData_image,phoneData_linetype,phoneData_city,phoneData_country,phoneData_state,phoneData_zip)
+          
+          database.findNameInDatabase(phoneData_firstname,phoneData_lastname, function(response){
+            if(response.length>0){
+              console.log(response);
+              database.updateSearchedPersonByPhone(emailData_firstName,emailData_lastName,'',phone)
+            }else{
+              database.updateSearchedPersonByEmail(emailData_firstName,emailData_lastName,'',phone)
+              getPersonData.getDataByName(phoneData_firstname, phoneData_lastname);
+            }
+          });
+            
         }
   
         res.render('searchByPhone', {PhoneData: phoneData_str, error: null});
