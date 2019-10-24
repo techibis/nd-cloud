@@ -41,26 +41,27 @@ function getDataByName(firstName,lastName,res){
       
         if ('person' in (data.results)){
             for (let i =0; i < data.results.person.length; i++) { 
-            data_id = data.results.person[i].id;
-            db = data.results.person[i].db;
-            state = data.results.person[i].state;
-            state_name = data.results.person[i].state_name;
-            full_name = data.results.person[i].full_name;
-            dob = data.results.person[i].dob;
-            race = data.results.person[i].race;
-            sex = data.results.person[i].sex;
-            height  = data.results.person[i].height;
-            weight = data.results.person[i].weight;
-            hair = data.results.person[i].hair;
-            eyes = data.results.person[i].eyes;
-            image = data.results.person[i].image;
-            address = data.results.person[i].address;
-            country = data.results.person[i].county;
-            crime_type = data.results.person[i].crime;
-            sentence = data.results.person[i].sentence;
-            personal_sign = data.results.person[i].personal;
-            last_update= data.results.person[i].last_update;
-            type = data.results.person[i].type;
+            data_id = data.results.person[i].id?data.results.person[i].id:null;
+            db = data.results.person[i].db?data.results.person[i].db:null;
+            state = data.results.person[i].state?data.results.person[i].state:null;
+            state_name = data.results.person[i].state_name?data.results.person[i].state_name:null;
+            full_name = data.results.person[i].full_name?data.results.person[i].full_name:null;
+            dob = data.results.person[i].dob?data.results.person[i].dob:null;
+            race = data.results.person[i].race?data.results.person[i].race:null;
+            sex = data.results.person[i].sex?data.results.person[i].sex:null;
+            height  = data.results.person[i].height?data.results.person[i].height:null;
+            weight = data.results.person[i].weight?data.results.person[i].weight:null;
+            hair = data.results.person[i].hair?data.results.person[i].hair:null;
+            eyes = data.results.person[i].eyes?data.results.person[i].eyes:null;
+            image = data.results.person[i].image?data.results.person[i].image:null;
+            address = data.results.person[i].address?data.results.person[i].address:null;
+            country = data.results.person[i].county?data.results.person[i].county:null;
+            crime_type = data.results.person[i].crime?data.results.person[i].crime:null;
+            sentence = data.results.person[i].sentence?data.results.person[i].sentence:null;
+            personal_sign = data.results.person[i].personal?data.results.person[i].personal:null;
+            last_update= data.results.person[i].last_update?data.results.person[i].last_update:null;
+            type = data.results.person[i].type?data.results.person[i].type:null;
+
 
             if (typeof crime_type === "object"){
                 crime_type = JSON.stringify(crime_type);

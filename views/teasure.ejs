@@ -7,9 +7,44 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
   </head>
   <body>
-    <div class="container">
-        <p><%= result %></p>
-        <p><%= data %></p>
+    <div class="teasure-container">  
+      <% for(var i=0; i<data.length; i++) { 
+        let database = data[i].database;
+        let dataId = data[i].dataId; %>
+      <div class="teasure">
+        <a href="<%= database %>/<%= dataId %>">
+          <p> Full Name :
+            <%= data[i].name %>
+          </p>
+          <p> Date of Birth :
+            <%= data[i].age %>
+          </p>
+          <p>State :
+            <%= data[i].state %>
+          </p>
+          <p> Locations :
+            <%= data[i].locations %>
+          </p>
+          <p> Background :
+            <%= data[i].background %>
+          </p>
+          <p> Birth Record :
+            <%= data[i].background %>
+          </p>
+          <p> Death Record:
+            <%= data[i].death %>
+          </p>
+          <p> Divorce Record :
+            <%= data[i].divorce %>
+          </p>
+          <p> Contact Information :
+            <%= data[i].contact %>
+          </p>
+        </a>
+      </div>
+      <%
+        }
+      %>
     </div>
   </body>
 </html>

@@ -4,7 +4,7 @@
 */
 
 body {
-    width: 800px;
+    width: 100%;
     margin: 0 auto;
     font-family: 'Open Sans', sans-serif;
   }
@@ -71,4 +71,17 @@ body {
   }
   p {
     color: #E64A19;
+  }
+  .teasure-container{
+    /* width: 90%; */
+    margin:auto;
+  }
+  .teasure{
+    width: 27%;
+    margin:2%;
+    float: left;
+    border:1px solid black;
+  }
+  .teasure a{
+    text-decoration: none;
   }
