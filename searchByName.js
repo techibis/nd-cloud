@@ -18,7 +18,9 @@ let person_zip;
 let person_county;
 let person_phone;
 
-function getDataByName(firstName,lastName, callback){
+
+function getDataByName(firstName,lastName,apiArray){
+
     unirest.post('https://www.nationalpublicdata.com/feeds/FDSFeed.cfm')
     .header('Accept', 'application/json')
     .send({ "xml": "<FDSRequest><username>"+username+"</username><password>"+password+"</password><sType>PFSBN</sType><detail>1</detail><testmode>false</testmode><searchParams><firstName>"+firstName+"</firstName><middleName></middleName><lastName>"+lastName+"</lastName><city></city><state></state><dob></dob></searchParams></FDSRequest>" })
@@ -45,16 +47,29 @@ function getDataByName(firstName,lastName, callback){
                 person_phone = data[i].Phone?data[i].Phone:null;
                 database.insert_persons_data(person_firstName,person_lastName,person_middleName,person_dob,person_address,person_city,person_state,person_zip,person_county,person_phone)
             }
-        }else{
-            console.log("no data found");
         }
-        return callback({person_firstName,person_lastName});
+        peopleApiCAllDone(apiArray);
+        return;
 
+        // return callback({firstName,lastName});
 
         // res.render('index', {data: json, error: null});
     });
 };
 
+function peopleApiCAllDone(apiArray){
+    const list = [{id:0}, {id:1}, {id:2}];
+    let arrayCopy = [...apiArray];
+    let filteredDataSource = arrayCopy.filter((item) => {
+       if (item.people === 0) {
+           item.people = 1;
+        }
+        return item;
+    });
+    console.log(filteredDataSource);
+
+    console.log(apiArray[0]['people']);
+}
 
 module.exports ={
     json,

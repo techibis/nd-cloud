@@ -22,7 +22,7 @@ let phone_phone;
 function getDataByPhone(phone,res){
     unirest.post('https://www.nationalpublicdata.com/feeds/FDSFeed.cfm')
     .header('Accept', 'application/json')
-    .send({ "xml": "<FDSRequest><username>"+username+"</username><password>"+password+"</password><sType>PFPHN</sType><detail>1</detail><testmode>false</testmode><searchParams><phonenumber>"+phone+"</phonenumber></searchParams></FDSRequest>" })
+    .send({ "xml": "<FDSRequest><username>"+username+"</username><password>"+password+"</password><sType>CELNP</sType><detail>1</detail><testmode>false</testmode><searchParams><lastName></lastName><firstName></firstName><state></state><city></city><phonenumber>"+phone+"</phonenumber></searchParams></FDSRequest>" })
     .end(function (response) {
         json = parser.toJson(response.body);
         jsonData = JSON.parse(json);

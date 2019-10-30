@@ -8,6 +8,7 @@ const database = require('./databaseConfig');
 const getPersonData = require('./searchByName');
 const getPhoneData = require('./searchByPhone');
 const getEmailData = require('./searchByEmail');
+const showResult = require('./showResultsFromDatabase');
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,110 +30,146 @@ class Resultrecord{
       this.database = database;
     }
 }
+
+// class ApiArray{
+//     constructor (people,criminal,birth,death,divorce){
+//         this.people = people;
+//         this.criminal = criminal;
+//         this.birth = birth;
+//         this.death = death;
+//         this.divorce = divorce;
+//     }
+// }
   
 let resultData = new Array();
+// let apiArray = new Array();
 
 app.get('/', function (req, res) {
     res.render('index', {data: null, error: null});
 })
 
 // json = database.json;
+let apiArray =[{people:0},{criminal:0},{birth:0},{death:0},{divorce:0}];
 
 app.post('/', function (req, res) {
     let firstName = req.body.firstName;
     let lastName = req.body.lastName;
-    let dataId = '';
     database.findNameInDatabase(firstName,lastName,function(result){
-        if(result.length>0){
-            found = "name found";
-            database.showSearchedPersonData(firstName,lastName, function(result){
-        
-                for (let i=0;i<result.length;i++){
-                  if(i>0){
-                    dataId += ','; 
-                  }
-                  dataId += result[i].id;
-                }
-                database.showPersonsTeasure(dataId, function(result){
-                  if (result){
-                    for (let i=0;i<result.length;i++){
-                      resultData.push(new Resultrecord(
-                        result[i].firstName,
-                        result[i].lastName,
-                        result[i].age,
-                        result[i].state,
-                        result[i].locations,
-                        'N/A',
-                        'N/A',
-                        'N/A',
-                        result[i].contact,
-                        result[i].id,
-                        'Person'
-                      ));
-                    }
-                  }
-                })
-          
-                  database.showEmailTeasure(dataId, function(result){
-                  if(result){
-                      for (let i=0;i<result.length;i++){
-                          resultData.push(new Resultrecord(
-                          result[i].emailData_firstName,
-                          result[i].emailData_lastName,
-                          'N/A',
-                          'N/A',
-                          result[i].emailData_location,
-                          'N/A',
-                          'N/A',
-                          'N/A',
-                          result[i].email,
-                          result[i].id,
-                          'Email'
-                          ));
-                        }
-                    }
-                      res.render('teasure', {data:resultData});
-                })
-          
-            })
-        }else{
+        if(result.length==0){
             database.searchedPerson(firstName,lastName,'','');
-            getPersonData.getDataByName(firstName, lastName,function(response){
+            // let apiArray = new Array(5).fill(0);
+            let counter =0;
+            console.log(firstName);
+            getPersonData.getDataByName(firstName, lastName, apiArray);
+                console.log(apiArray);
+                var interval = setInterval(function() { checkIfDone(firstName,lastName);}, 2000);
+                function checkIfDone(firstName,lastName){ 
 
-            
-                database.showSearchedPersonData(firstName,lastName, function(result){
-            
-                    for (let i=0;i<result.length;i++){
-                        if(i>0){
-                        dataId += ','; 
-                        }
-                        dataId += result[i].id;
-                    }
-                    database.showPersonsTeasure(dataId, function(result){
-                        if (result){
-                        for (let i=0;i<result.length;i++){
-                            resultData.push(new Resultrecord(
-                            result[i].firstName,
-                            result[i].lastName,
-                            result[i].age,
-                            result[i].state,
-                            result[i].locations,
-                            'N/A',
-                            'N/A',
-                            'N/A',
-                            result[i].contact,
-                            result[i].id,
-                            'Person'
-                            ));
-                        }
-                        res.render('teasure', {data:resultData});
-                        }
-                    })
-                
-                })
-            })
+                    counter +=1;
+                    // if ((ApiArray.people)===1 || counter==10)
+                    console.log(apiArray);
+                    if ((apiArray[0]['people'])===1)
+                    myStopFunction();
+                    showResult.showPersonsDatafromDatabase(firstName,lastName,res);
+                };
+        
+                function myStopFunction() {
+                    clearInterval(interval);
+                }
         }
     })
+    let dataId = '';
+    // database.findNameInDatabase(firstName,lastName,function(result){
+    //     if(result.length>0){
+    //         found = "name found";
+    //         database.showSearchedPersonData(firstName,lastName, function(result){
+        
+    //             for (let i=0;i<result.length;i++){
+    //               if(i>0){
+    //                 dataId += ','; 
+    //               }
+    //               dataId += result[i].id;
+    //             }
+    //             database.showPersonsTeasure(dataId, function(result){
+    //               if (result){
+    //                 for (let i=0;i<result.length;i++){
+    //                   resultData.push(new Resultrecord(
+    //                     result[i].firstName,
+    //                     result[i].lastName,
+    //                     result[i].age,
+    //                     result[i].state,
+    //                     result[i].locations,
+    //                     'N/A',
+    //                     'N/A',
+    //                     'N/A',
+    //                     result[i].contact,
+    //                     result[i].id,
+    //                     'Person'
+    //                   ));
+    //                 }
+    //               }
+    //             })
+          
+    //               database.showEmailTeasure(dataId, function(result){
+    //               if(result){
+    //                   for (let i=0;i<result.length;i++){
+    //                       resultData.push(new Resultrecord(
+    //                       result[i].emailData_firstName,
+    //                       result[i].emailData_lastName,
+    //                       'N/A',
+    //                       'N/A',
+    //                       result[i].emailData_location,
+    //                       'N/A',
+    //                       'N/A',
+    //                       'N/A',
+    //                       result[i].email,
+    //                       result[i].id,
+    //                       'Email'
+    //                       ));
+    //                     }
+    //                 }
+    //                   res.render('teasure', {data:resultData});
+    //             })
+          
+    //         })
+    //     }else{
+    //         database.searchedPerson(firstName,lastName,'','');
+    //         getPersonData.getDataByName(firstName, lastName,function(response){
+
+            
+    //             database.showSearchedPersonData(firstName,lastName, function(result){
+            
+    //                 for (let i=0;i<result.length;i++){
+    //                     if(i>0){
+    //                     dataId += ','; 
+    //                     }
+    //                     dataId += result[i].id;
+    //                 }
+    //                 database.showPersonsTeasure(dataId, function(result){
+    //                     if (result){
+    //                     for (let i=0;i<result.length;i++){
+    //                         resultData.push(new Resultrecord(
+    //                         result[i].firstName,
+    //                         result[i].lastName,
+    //                         result[i].age,
+    //                         result[i].state,
+    //                         result[i].locations,
+    //                         'N/A',
+    //                         'N/A',
+    //                         'N/A',
+    //                         result[i].contact,
+    //                         result[i].id,
+    //                         'Person'
+    //                         ));
+    //                     }
+    //                     res.render('teasure', {data:resultData});
+    //                     }
+    //                 })
+                
+    //             })
+    //         })
+    //     }
+    // })
     // res.render('index', {data: json, error: null});
 });
 
@@ -378,3 +415,4 @@ app.get('/Phone/:id', function (req, res) {
 app.listen(port, function(){
     console.log("Net Detective App Listening to Port 3000");
 })
+
