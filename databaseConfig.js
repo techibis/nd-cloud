@@ -65,57 +65,37 @@ function findPhoneInDatabase(phoneNumber,callback) {
 }
 
 function insert_raw_json_name(jsonData){
-    let sql = "INSERT INTO raw_json_name (person_data_json,data_source,searched_person_id) VALUES ('"+jsonData+"','Complete Criminal Checks','"+searchedPersonId+"')";
+    let sql = "INSERT INTO raw_json_name (person_data_json,data_source,searched_person_id) VALUES ('"+jsonData+"','Background Checks','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
     });
 }
 
-function insert_persons_data(data_id,db,state,state_name,full_name,dob,race,eyes,hair,height,weight,image,sex,country,address,crime_type,sentence,type,personal_sign,last_update){
-    let sql = "INSERT INTO persons (";
-    if(data_id!=null) sql+="data_id,";
-    if(db!=null) sql+="db,";
-    if(state!=null) sql+="state,";
-    if(state_name!=null) sql+="state_name,";
-    if(full_name!=null) sql+="full_name,";
-    if(dob!=null) sql+="dob,";
-    if(race!=null) sql+="race,";
-    if(eyes!=null) sql+="eyes,";
-    if(hair!=null) sql+="hair,";
-    if(height!=null) sql+="height,";
-    if(weight!=null) sql+="weight,";
-    if(image!=null) sql+="image,";
-    if(sex!=null) sql+="sex,";
-    if(country!=null) sql+="country,";
-    if(address!=null) sql+="address,";
-    if(crime_type!=null) sql+="crime_type,";
-    if(sentence!=null) sql+="sentence,";
-    if(type!=null) sql+="type,";
-    if(personal_sign!=null) sql+="personal_sign,";
-    if(last_update!=null) sql+="last_update,";
+function insert_persons_data(person_firstName,person_lastName,person_middleName,person_dob,person_address,person_city,person_state,person_zip,person_county,person_phone){
+    let sql = "INSERT INTO persons ("
+    if(person_firstName!=null && typeof person_firstName !=='object') sql+="firstName,";
+    if(person_lastName!=null && typeof person_lastName !=='object') sql+="lastName,";
+    if(person_middleName!=null && typeof person_middleName !=='object') sql+="middleName,";
+    if(person_dob!=null && typeof person_dob !=='object') sql+="dob,";
+    if(person_address!=null && typeof person_address !== 'object') sql+="address,";
+    if(person_city!=null && typeof person_city !== 'object') sql+="city,";
+    if(person_state!=null && typeof person_state !=='object') sql+="state,";
+    if(person_zip!=null && typeof person_zip !=='object') sql+="zip,";
+    if(person_county!=null && typeof person_county !=='object') sql+="county,";
+    if(person_phone!=null && typeof person_phone !=='object') sql+="phone,";
     if(searchedPersonId!=null) sql+="searched_person_id) VALUES (";
-    if(data_id!=null) sql+="'"+data_id+"',";
-    if(db!=null) sql+=" '"+db+"',";
-    if(state!=null) sql+="'"+state+"',";
-    if(state_name!=null) sql+=" '"+state_name+"',";
-    if(full_name!=null) sql+="'"+full_name+"',";
-    if(dob!=null) sql+=" '"+dob+"',";
-    if(race!=null) sql+="'"+race+"',";
-    if(eyes!=null) sql+=" '"+eyes+"',";
-    if(hair!=null) sql+="'"+hair+"',";
-    if(height!=null) sql+=" '"+height+"',";
-    if(weight!=null) sql+="'"+weight+"',";
-    if(image!=null) sql+=" '"+image+"',";
-    if(sex!=null) sql+="'"+sex+"',";
-    if(country!=null) sql+="'"+country+"',";
-    if(address!=null) sql+="'"+address+"',";
-    if(crime_type!=null) sql+="'"+crime_type+"',";
-    if(sentence!=null) sql+=" '"+sentence+"',";
-    if(type!=null) sql+="  '"+type+"',";
-    if(personal_sign!=null) sql+="  '"+personal_sign+"',";
-    if(last_update!=null) sql+="   '"+last_update+"',";
-    if(searchedPersonId!=null) sql+="  '"+searchedPersonId+"')";
+    if(person_firstName!=null && typeof person_firstName !=='object') sql+="'"+person_firstName+"',";
+    if(person_lastName!=null && typeof person_lastName !=='object') sql+=" '"+person_lastName+"',";
+    if(person_middleName!=null && typeof person_middleName !=='object') sql+="'"+person_middleName+"',";
+    if(person_dob!=null && typeof person_dob !=='object') sql+=" '"+person_dob+"',";
+    if(person_address!=null && typeof person_address !== 'object') sql+="'"+person_address+"',";
+    if(person_city!=null && typeof person_city !== 'object') sql+=" '"+person_city+"',";
+    if(person_state!=null && typeof person_state !=='object') sql+="'"+person_state+"',";
+    if(person_zip!=null && typeof person_zip !=='object') sql+=" '"+person_zip+"',";
+    if(person_county!=null && typeof person_county !=='object') sql+="'"+person_county+"',";
+    if(person_phone!=null && typeof person_phone !=='object') sql+=" '"+person_phone+"',";
+    if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("1 record inserted");
@@ -147,7 +127,7 @@ function insert_raw_json_email(emailData){
 }
 
 function insert_email_data(emailData_firstName,emailData_lastName,emailData_fullName,emailData_location,email){
-    let sql = "INSERT INTO emailData (emailData_firstname,emailData_lastname,emailData_fullname,emailData_location,email searched_person_id) VALUES ('"+emailData_firstName+"','"+emailData_lastName+"', '"+emailData_fullName+"','"+emailData_location+"','"+email+"','"+searchedPersonId+"')";
+    let sql = "INSERT INTO emailData (emailData_firstname,emailData_lastname,emailData_fullname,emailData_location,email,searched_person_id) VALUES ('"+emailData_firstName+"','"+emailData_lastName+"', '"+emailData_fullName+"','"+emailData_location+"','"+email+"','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("1 record inserted");
@@ -165,7 +145,7 @@ function showSearchedPersonData(firstName,lastName,callback){
 
 
 function showPersonsTeasure(id,callback){
-    let sql = "SELECT id, full_name,(CASE WHEN dob IS NULL THEN 'N/A' ELSE dob END) AS 'age',(CASE WHEN state IS NULL THEN 'N/A' ELSE state END) AS 'state' , (CASE WHEN address IS NULL THEN 'N/A' ELSE 1 END) AS 'locations',(CASE WHEN crime_type IS NULL THEN 'N/A' ELSE 1 END) As background from persons where searched_person_id in ("+id+")";
+    let sql = "SELECT id, firstName,lastName,(CASE WHEN dob IS NULL THEN 'N/A' ELSE dob END) AS 'age',(CASE WHEN state IS NULL THEN 'N/A' ELSE state END) AS 'state' , (CASE WHEN address IS NULL THEN 'N/A' ELSE 1 END) AS 'locations',(CASE WHEN phone IS NULL THEN 'N/A' ELSE 1 END) As contact from persons where searched_person_id in ("+id+")";
 
     con.query(sql, function (err, result) {
 
@@ -178,7 +158,7 @@ function showPersonsTeasure(id,callback){
 }
 
 function showEmailTeasure(id,callback){
-    let sql = "SELECT id,emailData_fullname,(CASE WHEN emailData_location IS NULL THEN 'N/A' ELSE 1 END) As 'emailData_location',(CASE WHEN email IS NULL THEN 'N/A' ELSE 1 END) AS 'email' from emailData where searched_person_id in ("+id+")";
+    let sql = "SELECT id,emailData_firstName,emailData_lastName,(CASE WHEN emailData_location IS NULL THEN 'N/A' ELSE 1 END) As 'emailData_location',(CASE WHEN email IS NULL THEN 'N/A' ELSE 1 END) AS 'email' from emailData where searched_person_id in ("+id+")";
 
     con.query(sql, function (err, result) {
 

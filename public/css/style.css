@@ -44,7 +44,7 @@ body {
     background: #fff;
     font-family: Open Sans,Verdana;
     padding: 10px 15px;
-    margin: 30px 0px;
+    /* margin: 30px 0px; */
     -webkit-transition: all 0.1s ease-in-out;
     -moz-transition: all 0.1s ease-in-out;
     -ms-transition: all 0.1s ease-in-out;
@@ -71,6 +71,7 @@ body {
   }
   p {
     color: #E64A19;
+    margin:0px;
   }
   .teasure-container{
     /* width: 90%; */
