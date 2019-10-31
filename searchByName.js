@@ -1,6 +1,11 @@
 const parser = require('xml2json');
 var unirest = require('unirest');
 const database = require('./databaseConfig');
+const showResult = require('./showResultsFromDatabase');
+const criminalRecord = require('./criminalRecord.js');
+const birthRecord = require('./birthRecord.js');
+const mDRecord = require('./marriageAndDivorceRecord.js');
+const deathRecord = require('./deathRecord.js');
 const username = "netdetectivexml";
 const password = "x1254d";
 
@@ -17,9 +22,12 @@ let person_state;
 let person_zip;
 let person_county;
 let person_phone;
+let counter =0;
+let apiArray =[{people:0},{criminal:0},{birth:0},{death:0},{md:0}];
+let output={};
 
 
-function getDataByName(firstName,lastName,apiArray){
+function getDataByName(firstName,lastName,res){
 
     unirest.post('https://www.nationalpublicdata.com/feeds/FDSFeed.cfm')
     .header('Accept', 'application/json')
@@ -48,30 +56,43 @@ function getDataByName(firstName,lastName,apiArray){
                 database.insert_persons_data(person_firstName,person_lastName,person_middleName,person_dob,person_address,person_city,person_state,person_zip,person_county,person_phone)
             }
         }
-        peopleApiCAllDone(apiArray);
-        return;
 
-        // return callback({firstName,lastName});
-
-        // res.render('index', {data: json, error: null});
+        criminalRecord.getCriminalRecord(firstName,lastName,apiArray);
+        birthRecord.getBirthRecord(firstName,lastName,apiArray);
+        deathRecord.getDeathRecord(firstName,lastName,apiArray);
+        mDRecord.getMDRecord(firstName,lastName,apiArray);
+        
+        var interval = setInterval(function() { 
+            //  checkIfDone(firstName,lastName)
+            counter +=1;
+            console.log(apiArray);
+            peopleApiCAllDone(apiArray);
+            if ((apiArray[0]['people'])+(apiArray[0]['criminal'])+(apiArray[0]['birth'])+(apiArray[0]['death'])+(apiArray[0]['md'])===5 || counter==10){
+                myStopFunction(interval);
+                // showResult.showPersonsDatafromDatabase(firstName,lastName,res);
+                showResult.showPersonsDatafromDatabase(firstName,lastName,function(result){
+                    res.render('teasure', {data:result}); 
+                });
+            }
+        ;}, 200);
+        
     });
 };
 
+function myStopFunction(interval) {
+    clearInterval(interval);
+}
+
 function peopleApiCAllDone(apiArray){
-    const list = [{id:0}, {id:1}, {id:2}];
     let arrayCopy = [...apiArray];
-    let filteredDataSource = arrayCopy.filter((item) => {
+    arrayCopy.filter((item) => {
        if (item.people === 0) {
            item.people = 1;
         }
-        return item;
     });
-    console.log(filteredDataSource);
-
-    console.log(apiArray[0]['people']);
 }
 
+
 module.exports ={
-    json,
     getDataByName
 };

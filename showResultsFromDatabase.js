@@ -1,9 +1,10 @@
 const database = require('./databaseConfig');
 
 class Resultrecord{
-    constructor (firstName,lastName,age,state,locations,background,death,divorce,contact,dataId,database){
+    constructor (firstName,lastName,middleName,age,state,locations,background,death,divorce,contact,dataId,database){
       this.firstName = firstName;
       this.lastName = lastName;
+      this.middleName = middleName;
       this.age = age;
       this.state = state;
       this.locations = locations;
@@ -18,8 +19,9 @@ class Resultrecord{
   
 let resultData = new Array();
 
-function showPersonsDatafromDatabase(firstName,lastName,res){
-    console.log(firstName);
+
+function showPersonsDatafromDatabase(firstName,lastName,callback){
+
     database.showSearchedPersonData(firstName,lastName, function(result){
         let dataId = '';
 
@@ -28,7 +30,7 @@ function showPersonsDatafromDatabase(firstName,lastName,res){
             dataId += ','; 
             }
             dataId += result[i].id;
-            console.log(dataId);
+            // console.log(dataId);
         }
         database.showPersonsTeasure(dataId, function(result){
             if (result){
@@ -36,6 +38,7 @@ function showPersonsDatafromDatabase(firstName,lastName,res){
                     resultData.push(new Resultrecord(
                     result[i].firstName,
                     result[i].lastName,
+                    result[i].middleName,
                     result[i].age,
                     result[i].state,
                     result[i].locations,
@@ -47,11 +50,72 @@ function showPersonsDatafromDatabase(firstName,lastName,res){
                     'Person'
                     ));
                 }
-                res.render('teasure', {data:resultData});
+
             }
         })
+        database.showEmailTeasure(dataId, function(result){
+            if(result){
+                for (let i=0;i<result.length;i++){
+                    resultData.push(new Resultrecord(
+                    result[i].emailData_firstName,
+                    result[i].emailData_lastName,
+                    '',
+                    'N/A',
+                    'N/A',
+                    result[i].emailData_location,
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    result[i].email,
+                    result[i].id,
+                    'Email'
+                    ));
+                }
+            }
+        })
+        // database.showPhoneTeasure(dataId, function(result){
+        //     if(result){
+        //         for (let i=0;i<result.length;i++){
+        //             resultData.push(new Resultrecord(
+        //             result[i].emailData_firstName,
+        //             result[i].emailData_lastName,
+        //             result[i].emailData_middleName,
+        //             'N/A',
+        //             'N/A',
+        //             result[i].emailData_location,
+        //             'N/A',
+        //             'N/A',
+        //             'N/A',
+        //             result[i].email,
+        //             result[i].id,
+        //             'Email'
+        //             ));
+        //         }
+        //     }
+        // })
 
-       
+        database.showBirthTeasure(dataId, function(result){
+            if(result){
+                for (let i=0;i<result.length;i++){
+                    resultData.push(new Resultrecord(
+                    result[i].birthRecord_firstName,
+                    result[i].birthRecord_lastName,
+                    result[i].birthRecord_middleName,
+                    result[i].birthRecord_dob,
+                    result[i].birthRecord_state,
+                    result[i].birthRecord_country,
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    result[i].id,
+                    'Birth'
+                    ));
+                }
+            };
+            return callback(resultData);
+        });
+
     })
 
 }
