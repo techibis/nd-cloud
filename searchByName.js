@@ -23,8 +23,7 @@ let person_zip;
 let person_county;
 let person_phone;
 let counter =0;
-let apiArray =[{people:0},{criminal:0},{birth:0},{death:0},{md:0}];
-let output={};
+let apiArray =[{people:0},{criminal:0},{birth:0},{death:0},{marriage:0},{divorce:0}];
 
 
 function getDataByName(firstName,lastName,res){

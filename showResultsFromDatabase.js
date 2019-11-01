@@ -1,7 +1,7 @@
 const database = require('./databaseConfig');
 
 class Resultrecord{
-    constructor (firstName,lastName,middleName,age,state,locations,background,death,divorce,contact,dataId,database){
+    constructor (firstName,lastName,middleName,age,state,locations,background,death,marriage,divorce,contact,dataId,database){
       this.firstName = firstName;
       this.lastName = lastName;
       this.middleName = middleName;
@@ -10,6 +10,7 @@ class Resultrecord{
       this.locations = locations;
       this.background = background;
       this.death = death;
+      this.marriage = marriage;
       this.divorce = divorce;
       this.contact = contact;
       this.dataId = dataId;
@@ -45,6 +46,7 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                     'N/A',
                     'N/A',
                     'N/A',
+                    'N/A',
                     result[i].contact,
                     result[i].id,
                     'Person'
@@ -66,6 +68,7 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                     'N/A',
                     'N/A',
                     'N/A',
+                    'N/A',
                     result[i].email,
                     result[i].id,
                     'Email'
@@ -73,22 +76,46 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             }
         })
-        // database.showPhoneTeasure(dataId, function(result){
+
+        database.showPhoneTeasure(dataId, function(result){
+            if(result){
+                for (let i=0;i<result.length;i++){
+                    resultData.push(new Resultrecord(
+                    result[i].phone_firstname,
+                    result[i].phone_lastname,
+                    result[i].phone_middlename,
+                    result[i].phone_dob,
+                    result[i].phone_state,
+                    result[i].phone_address,
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    result[i].phone,
+                    result[i].id,
+                    'Phone'
+                    ));
+                }
+            }
+        })
+
+        // database.showCellPhoneTeasure(dataId, function(result){
         //     if(result){
         //         for (let i=0;i<result.length;i++){
         //             resultData.push(new Resultrecord(
-        //             result[i].emailData_firstName,
-        //             result[i].emailData_lastName,
-        //             result[i].emailData_middleName,
+        //             result[i].phone_firstname,
+        //             result[i].phone_lastname,
+        //             result[i].phone_middlename,
+        //             result[i].phone_dob,
+        //             result[i].phone_state,
+        //             result[i].phone_address,
         //             'N/A',
         //             'N/A',
-        //             result[i].emailData_location,
         //             'N/A',
         //             'N/A',
         //             'N/A',
-        //             result[i].email,
         //             result[i].id,
-        //             'Email'
+        //             'Phone'
         //             ));
         //         }
         //     }
@@ -108,8 +135,75 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                     'N/A',
                     'N/A',
                     'N/A',
+                    'N/A',
                     result[i].id,
                     'Birth'
+                    ));
+                }
+            };
+        });
+        
+        database.showDeathTeasure(dataId, function(result){
+            if(result){
+                for (let i=0;i<result.length;i++){
+                    resultData.push(new Resultrecord(
+                    result[i].firstname,
+                    result[i].lastname,
+                    result[i].middlename,
+                    result[i].DateofBirth,
+                    result[i].State,
+                    result[i].lastcounty,
+                    'N/A',
+                    result[i].DateofDeath,
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    result[i].id,
+                    'Death'
+                    ));
+                }
+            };
+        });
+
+        database.showMDTeasure(dataId, function(result){
+            if(result){
+                for (let i=0;i<result.length;i++){
+                    resultData.push(new Resultrecord(
+                    result[i].md_firstname,
+                    result[i].md_lastname,
+                    result[i].md_middlename,
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    result[i].marriage_date,
+                    result[i].divorce_date,
+                    'N/A',
+                    result[i].id,
+                    'MD'
+                    ));
+                }
+            };
+        });
+        
+        database.showCriminalTeasure(dataId, function(result){
+            if(result){
+                for (let i=0;i<result.length;i++){
+                    resultData.push(new Resultrecord(
+                    result[i].firstname,
+                    result[i].lastname,
+                    result[i].middlename,
+                    result[i].dob,
+                    result[i].state,
+                    result[i].address,
+                    result[i].crime,
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    result[i].id,
+                    'Criminal'
                     ));
                 }
             };

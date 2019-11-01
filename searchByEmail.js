@@ -9,7 +9,7 @@ let emailData;
 let notFound;
 let email_address='';
 
-function getDataByEmail(email,res, callback) {
+function getDataByEmail(email,res,callback) {
 
     email_address = email;
     fetch('https://api.fullcontact.com/v3/person.enrich', {
@@ -21,21 +21,22 @@ function getDataByEmail(email,res, callback) {
     }).then(function (res) {
         return res.json();
     }).then(function (json) {
-        if ('status' in json) {
-            notFound = json.message;
-            console.log(notFound);
-            // res.render('searchByEmail', { emailData: notFound, error: null });
-        } else {
+        if (!('status' in json)){
+
+            database.insert_raw_json_email(emailData);
+            emailData = JSON.stringify(json);
 
             emailData_firstName = json.details.name.given;
             emailData_lastName = json.details.name.family;
             emailData_fullName = json.fullName;
             emailData_location = json.location;
-            emailData = JSON.stringify(json);
-            database.insert_raw_json_email(emailData);
+
+        
             database.insert_email_data(emailData_firstName, emailData_lastName, emailData_fullName, emailData_location, email_address);
 
             return callback({emailData_firstName,emailData_lastName});
+        }else{
+            res.render('searchByEmail', {emailData: 'No Data Found', error: null});
         }
     });
 }

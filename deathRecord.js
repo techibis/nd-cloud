@@ -7,13 +7,13 @@ const password = "x1254d";
 let json;
 let jsonData;
 let data;
-let birthRecord_firstName;
-let birthRecord_lastName;
-let birthRecord_middleName;
-let birthRecord_dob;
-let birthRecord_gender;
-let birthRecord_country;
-let birthRecord_state;
+let firstname;
+let lastname;
+let middlename;
+let DateofDeath;
+let DateofBirth;
+let lastcounty;
+let State;
 
 
 function getDeathRecord(firstName,lastName,apiArray){
@@ -26,31 +26,29 @@ function getDeathRecord(firstName,lastName,apiArray){
         data = jsonData.FDSResponse.searchResults.DeathSearch.Result;
 
         database.insert_raw_json_death(json);
-        deathApiCAllDone(apiArray);
-        // if (jsonData.FDSResponse.searchResults.DeathSearch !==''){
-        //     for (let i =0; i < data.length; i++) { 
-        //         birthRecord_firstName = data[i].firstName?data[i].firstName:null;
-        //         birthRecord_lastName = data[i].lastName?data[i].lastName:null;
-        //         birthRecord_middleName = data[i].middleName?data[i].middleName:null;
-        //         birthRecord_dob = data[i].DOB?data[i].DOB:null;
-        //         birthRecord_gender = data[i].gender?data[i].gender:null;
-        //         birthRecord_country = data[i].birthCounty?data[i].birthCounty:null;
-        //         birthRecord_state = data[i].state?data[i].state:null;
-        //         database.insert_birth_data(birthRecord_firstName,birthRecord_lastName,birthRecord_middleName,birthRecord_dob,birthRecord_gender,birthRecord_country,birthRecord_state);
-        //     }
-        //     birthApiCAllDone(apiArray);
-        // }
-        // return;
+
+        if (jsonData.FDSResponse.searchResults.DeathSearch !==''){
+            for (let i =0; i < data.length; i++) { 
+                firstname = data[i].firstname?data[i].firstname:null;
+                lastname = data[i].lastname?data[i].lastname:null;
+                middlename = data[i].middlename?data[i].middlename:null;
+                DateofDeath = data[i].DateofDeath?data[i].DateofDeath:null;
+                DateofBirth = data[i].DateofBirth?data[i].DateofBirth:null;
+                lastcounty = data[i].lastcounty?data[i].lastcounty:null;
+                State = data[i].State?data[i].State:null;
+                database.insert_death_data(firstname,lastname,middlename,DateofDeath,DateofBirth,lastcounty,State);
+            }
+            deathApiCAllDone(apiArray);
+        }
     });
 };
 
 function deathApiCAllDone(apiArray){
     let arrayCopy = [...apiArray];
-    let filteredDataSource = arrayCopy.filter((item) => {
+    arrayCopy.filter((item) => {
         if (item.death === 0) {
             item.death = 1;
         }
-        // return item;
     });
 }
 

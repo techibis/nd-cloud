@@ -8,6 +8,7 @@ const database = require('./databaseConfig');
 const getPersonData = require('./searchByName');
 const getPhoneData = require('./searchByPhone');
 const getEmailData = require('./searchByEmail');
+const showResult = require('./showResultsFromDatabase');
 
 
 app.use(express.static('public'));
@@ -19,8 +20,6 @@ app.get('/', function (req, res) {
     res.render('index', {data: null, error: null});
 })
 
-
-
 app.post('/', function (req, res) {
     let firstName = req.body.firstName;
     let lastName = req.body.lastName;
@@ -28,15 +27,19 @@ app.post('/', function (req, res) {
         if(result.length==0){
             database.searchedPerson(firstName,lastName,'','');
             getPersonData.getDataByName(firstName, lastName,res);
+        }else{
+            showResult.showPersonsDatafromDatabase(firstName,lastName,function(result){
+                res.render('teasure', {data:result}); 
+            });
         }
     })
 });
+
 
 app.get('/email', function (req, res) {
     res.render('searchByEmail', {emailData: null, error: null});
 })
   
-
 app.post('/email', function (req, res) {
     let email = req.body.email;
     let emailData_firstName;
@@ -55,6 +58,12 @@ app.post('/email', function (req, res) {
                     }
                 });
             })
+        }else{
+            emailData_firstName = response[0].first_name;
+            emailData_lastName = response[0].last_name;
+            showResult.showPersonsDatafromDatabase(emailData_firstName,emailData_lastName,function(result){
+                res.render('teasure', {data:result}); 
+            });
         }
     })
 });
@@ -69,14 +78,28 @@ app.post('/phone', function (req, res) {
     let phoneData_lastName;
     let phone = req.body.phoneNumber;
     database.findPhoneInDatabase(phone, function(response){
-      if(response.length>0){
-        console.log("phone found")
-      }else{
-        database.searchedPerson('','','',phone);
-        getPhoneData.getDataByPhone(phone,res);
-      }
+        if (response.length == 0) {
+            database.searchedPerson('', '', '', phone);
+            getPhoneData.getDataByPhone(phone,res,function(response){
+                phoneData_firstName = response.phone_firstname;
+                phoneData_lastName = response.phone_lastname;
+                database.findNameInDatabase(phoneData_firstName,phoneData_lastName, function(response){
+                    if(response.length == 0){
+                        database.updateSearchedPersonByEmail( phoneData_firstName,phoneData_lastName,'',phone);
+                        getPersonData.getDataByName( phoneData_firstName, phoneData_lastName, res);
+                    }
+                });
+            });
+        }else{
+            phoneData_firstName = response[0].first_name;
+            phoneData_lastName = response[0].last_name;
+            showResult.showPersonsDatafromDatabase(phoneData_firstName,phoneData_lastName,function(result){
+                res.render('teasure', {data:result}); 
+            });
+        }
     })
 })
+
 
 app.get('/Person/:id', function (req, res) {
     let id = req.params.id;
@@ -87,6 +110,7 @@ app.get('/Person/:id', function (req, res) {
     })
 })
 
+
 app.get('/Email/:id', function (req, res) {
     let id = req.params.id;
     database.showEmailData(id,function(data){
@@ -96,6 +120,7 @@ app.get('/Email/:id', function (req, res) {
     })
 })
 
+
 app.get('/Phone/:id', function (req, res) {
     let id = req.params.id;
     database.showPhoneData(id,function(data){
@@ -104,6 +129,16 @@ app.get('/Phone/:id', function (req, res) {
       res.render('singlePersonData', {data: data_str, error: null});
     })
 })
+
+// app.get('/Cellphone/:id', function (req, res) {
+//     let id = req.params.id;
+//     database.showCellPhoneData(id,function(data){
+//       let data_str;
+//       data_str=JSON.stringify(data);
+//       res.render('singlePersonData', {data: data_str, error: null});
+//     })
+// })
+
 
 app.get('/Birth/:id', function (req, res) {
     let id = req.params.id;
@@ -116,6 +151,7 @@ app.get('/Birth/:id', function (req, res) {
     })
 })
 
+
 app.get('/Death/:id', function (req, res) {
     let id = req.params.id;
     console.log(id);
@@ -127,6 +163,7 @@ app.get('/Death/:id', function (req, res) {
     })
 })
 
+
 app.get('/MD/:id', function (req, res) {
     let id = req.params.id;
     console.log(id);
@@ -137,6 +174,7 @@ app.get('/MD/:id', function (req, res) {
       res.render('singlePersonData', {data: data_str, error: null});
     })
 })
+
 
 app.get('/Criminal/:id', function (req, res) {
     let id = req.params.id;
