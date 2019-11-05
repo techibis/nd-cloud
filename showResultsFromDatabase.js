@@ -23,6 +23,9 @@ let resultData = new Array();
 
 function showPersonsDatafromDatabase(firstName,lastName,callback){
 
+   emptyArray();
+   console.log(resultData);
+
     database.showSearchedPersonData(firstName,lastName, function(result){
         let dataId = '';
 
@@ -33,8 +36,11 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
             dataId += result[i].id;
             // console.log(dataId);
         }
+        console.log(resultData);
+        console.log("0");
         database.showPersonsTeasure(dataId, function(result){
             if (result){
+                console.log(result);
                 for (let i=0;i<result.length;i++){
                     resultData.push(new Resultrecord(
                     result[i].firstName,
@@ -55,8 +61,11 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
 
             }
         })
+        console.log(resultData);
+        console.log("1");
         database.showEmailTeasure(dataId, function(result){
             if(result){
+                console.log(result);
                 for (let i=0;i<result.length;i++){
                     resultData.push(new Resultrecord(
                     result[i].emailData_firstName,
@@ -76,53 +85,13 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             }
         })
+        console.log(resultData);
+        console.log("2");
 
-        database.showPhoneTeasure(dataId, function(result){
-            if(result){
-                for (let i=0;i<result.length;i++){
-                    resultData.push(new Resultrecord(
-                    result[i].phone_firstname,
-                    result[i].phone_lastname,
-                    result[i].phone_middlename,
-                    result[i].phone_dob,
-                    result[i].phone_state,
-                    result[i].phone_address,
-                    'N/A',
-                    'N/A',
-                    'N/A',
-                    'N/A',
-                    result[i].phone,
-                    result[i].id,
-                    'Phone'
-                    ));
-                }
-            }
-        })
-
-        // database.showCellPhoneTeasure(dataId, function(result){
-        //     if(result){
-        //         for (let i=0;i<result.length;i++){
-        //             resultData.push(new Resultrecord(
-        //             result[i].phone_firstname,
-        //             result[i].phone_lastname,
-        //             result[i].phone_middlename,
-        //             result[i].phone_dob,
-        //             result[i].phone_state,
-        //             result[i].phone_address,
-        //             'N/A',
-        //             'N/A',
-        //             'N/A',
-        //             'N/A',
-        //             'N/A',
-        //             result[i].id,
-        //             'Phone'
-        //             ));
-        //         }
-        //     }
-        // })
 
         database.showBirthTeasure(dataId, function(result){
             if(result){
+                console.log(result);
                 for (let i=0;i<result.length;i++){
                     resultData.push(new Resultrecord(
                     result[i].birthRecord_firstName,
@@ -142,7 +111,8 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             };
         });
-        
+        console.log(resultData);
+        console.log("3");
         database.showDeathTeasure(dataId, function(result){
             if(result){
                 for (let i=0;i<result.length;i++){
@@ -164,7 +134,8 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             };
         });
-
+        console.log(resultData);
+        console.log("4");
         database.showMDTeasure(dataId, function(result){
             if(result){
                 for (let i=0;i<result.length;i++){
@@ -186,7 +157,8 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             };
         });
-        
+        console.log(resultData);
+        console.log("5");
         database.showCriminalTeasure(dataId, function(result){
             if(result){
                 for (let i=0;i<result.length;i++){
@@ -209,13 +181,48 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
             };
             return callback(resultData);
         });
+        console.log(resultData);
+        console.log("6");
 
     })
 
 }
+console.log(resultData);
 
+function showPhoneDataFromDatabase(phone,callback){
+    emptyArray();
+    database.showPhoneTeasure(phone, function(result){
+        console.log("7");
+        console.log(resultData);
+        if(result){
+            for (let i=0;i<result.length;i++){
+                resultData.push(new Resultrecord(
+                result[i].phone_firstname,
+                result[i].phone_lastname,
+                result[i].phone_middlename,
+                result[i].phone_dob,
+                result[i].phone_state,
+                result[i].phone_address,
+                'N/A',
+                'N/A',
+                'N/A',
+                'N/A',
+                result[i].phone,
+                result[i].id,
+                'Phone'
+                ));
+            }
+            return callback(resultData);
+        }
+    })
+}
+
+function emptyArray(){
+    resultData.length=0;
+}
 
 module.exports ={
-    showPersonsDatafromDatabase
+    showPersonsDatafromDatabase,
+    showPhoneDataFromDatabase
 };
         

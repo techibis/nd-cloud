@@ -17,10 +17,10 @@ let con = mysql.createConnection({
 function searchedPerson(firstName, lastName, email, phone){
     let sql = "INSERT INTO searched_person (first_name, last_name, email, phone, time) VALUES ('"+firstName+"','"+lastName+"','"+email+"','"+phone+"','"+currentDatetime+"')";
     con.query(sql, function (err, result) {
-    if (err) {throw err;}
-    else{
-    searchedPersonId = result.insertId;
-    }
+        if (err) { throw err; }
+        else {
+            searchedPersonId = result.insertId;
+        }
     });
 }
 
@@ -28,17 +28,17 @@ function updateSearchedPersonByEmail(firstName, lastName, email, phone){
     let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where email='"+email+"'";
     con.query(sql, function (err, result) {
     if (err) {throw err;}
-    console.log('1 record updated');
+    // console.log('1 record updated');
     });
 }
 
-function updateSearchedPersonByPhone(firstName, lastName, email, phone){
-    let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where phone='"+phone+"'";
-    con.query(sql, function (err, result) {
-    if (err) {throw err;}
-    console.log('1 record updated');
-    });
-}
+// function updateSearchedPersonByPhone(firstName, lastName, email, phone){
+//     let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where phone='"+phone+"'";
+//     con.query(sql, function (err, result) {
+//     if (err) {throw err;}
+//     console.log('1 record updated');
+//     });
+// }
 
 function findNameInDatabase(firstName, lastName,callback) {
     let sql = "SELECT * from searched_person where first_name='"+firstName+"' and last_name= '"+lastName+"'";
@@ -68,7 +68,7 @@ function insert_raw_json_name(jsonData){
     let sql = "INSERT INTO raw_json_name (person_data_json,data_source,searched_person_id) VALUES ('"+jsonData+"','Background Checks','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("1 record inserted");
+    
     });
 }
 
@@ -98,7 +98,6 @@ function insert_persons_data(person_firstName,person_lastName,person_middleName,
     if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
     });
 }
 
@@ -106,7 +105,6 @@ function insert_raw_json_phone(phoneData_str){
     let sql = "INSERT INTO raw_json_phone (phone_data_json,data_source,searched_person_id,time) VALUES ('"+phoneData_str+"','Phone Number Lookup','"+searchedPersonId+"', '"+currentDatetime+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
     });
 }
 
@@ -136,7 +134,6 @@ function insert_phone_data(phone_firstname,phone_lastname,phone_middlename,phone
     if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
     });
 }
 
@@ -144,7 +141,6 @@ function insert_raw_json_email(emailData){
     let sql = "INSERT INTO raw_json_email (email_data_json,data_source,searched_person_id) VALUES ('"+emailData+"','Email Address Lookup','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
     });
 }
 
@@ -164,7 +160,6 @@ function insert_email_data(emailData_firstName,emailData_lastName,emailData_full
     if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
     });
 }
 
@@ -172,7 +167,6 @@ function insert_raw_json_birth(json){
     let sql = "INSERT INTO raw_json_birth (birth_data_json,data_source,searched_person_id) VALUES ('"+json+"','Birth Record Checks','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("1 record inserted");
     });
 }
 
@@ -197,7 +191,6 @@ function insert_birth_data(birthRecord_firstName,birthRecord_lastName,birthRecor
 
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
     });
 }
 
@@ -205,7 +198,6 @@ function insert_raw_json_death(json){
     let sql = "INSERT INTO raw_json_death (death_data_json,data_source,searched_person_id) VALUES ('"+json+"','Death Record Checks','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("1 record inserted");
     });
 }
 
@@ -231,7 +223,6 @@ function insert_death_data(firstname,lastname,middlename,DateofDeath,DateofBirth
 
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
     });
 }
 
@@ -239,7 +230,6 @@ function insert_raw_json_md(json){
     let sql = "INSERT INTO raw_json_md (md_data_json,data_source,searched_person_id) VALUES ('"+json+"','Marriage/Divorce Record Checks','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("1 record inserted");
     });
 }
 
@@ -282,7 +272,7 @@ function insert_md_data(md_firstname,md_lastname,md_middlename,spouse_firstname,
 
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
+      
     });
 }
 
@@ -290,7 +280,7 @@ function insert_raw_json_criminalchecks(json){
     let sql = "INSERT INTO raw_json_criminalchecks (criminal_data_json,data_source,searched_person_id) VALUES ('"+json+"','Criminal Record Checks','"+searchedPersonId+"')";
     con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("1 record inserted");
+    
     });
 }
 
@@ -401,7 +391,7 @@ function insert_criminal_data(firstname,lastname,middlename,generation,dob,birth
 
     con.query(sql, function (err, result) {
         if (err) throw err;
-        console.log("1 record inserted");
+        
     });
 }
 
@@ -415,24 +405,11 @@ function showSearchedPersonData(firstName,lastName,callback){
 
 
 function showPersonsTeasure(id,callback){
-    let sql = "SELECT id, firstName,lastName,(CASE WHEN middleName IS NULL THEN '' ELSE middleName END) AS 'middleName',(CASE WHEN dob IS NULL THEN 'N/A' ELSE 1 END) AS 'age',(CASE WHEN state IS NULL THEN 'N/A' ELSE state END) AS 'state' , (CASE WHEN address IS NULL THEN 'N/A' ELSE 1 END) AS 'locations',(CASE WHEN phone IS NULL THEN 'N/A' ELSE 1 END) As contact from persons where searched_person_id in ("+id+")";
+    let sql = "SELECT id, firstName,lastName,(CASE WHEN middleName IS NULL THEN '' ELSE middleName END) AS 'middleName',(CASE WHEN dob IS NULL THEN 'N/A' ELSE 1 END) AS 'age',(CASE WHEN state IS NULL THEN 'N/A' ELSE state END) AS 'state' , (CASE WHEN address IS NULL THEN 'N/A' ELSE 1 END) AS 'locations',(CASE WHEN phone IS NULL THEN 'N/A' ELSE 1 END) As 'contact' from persons where searched_person_id in ("+id+") GROUP BY firstName,lastName,middleName,age,state,locations,contact ORDER BY id ASC";
 
     con.query(sql, function (err, result) {
 
         if (err) throw err;
-
-        if (result.length>0){
-            return callback(result);
-        }
-    });
-}
-
-function showEmailTeasure(id,callback){
-    let sql = "SELECT id,emailData_firstName,emailData_lastName,(CASE WHEN emailData_location IS NULL THEN 'N/A' ELSE 1 END) As 'emailData_location',(CASE WHEN email IS NULL THEN 'N/A' ELSE 1 END) AS 'email' from email_data where searched_person_id in ("+id+")";
-
-    con.query(sql, function (err, result) {
-
-        // if (err) throw err;
 
         return callback(result);
         // if (result.length>0){
@@ -440,8 +417,34 @@ function showEmailTeasure(id,callback){
     });
 }
 
-function showPhoneTeasure(id,callback){
-    let sql = "SELECT id,phone_firstname,phone_lastname,(CASE WHEN phone_middlename IS NULL THEN '' ELSE phone_middlename END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE 1 END) AS 'phone' from phone_data where searched_person_id in ("+id+")";
+function showEmailTeasure(id,callback){
+    let sql = "SELECT id,emailData_firstName,emailData_lastName,(CASE WHEN emailData_location IS NULL THEN 'N/A' ELSE 1 END) As 'emailData_location',(CASE WHEN email IS NULL THEN 'N/A' ELSE 1 END) AS 'email' from email_data where searched_person_id in ("+id+") GROUP BY emailData_firstName,emailData_lastName,emailData_location,email ORDER BY id ASC";
+
+    con.query(sql, function (err, result) {
+
+        if (err) throw err;
+
+        return callback(result);
+        // if (result.length>0){
+        // }
+    });
+}
+
+// function showPhoneTeasure(id,callback){
+//     let sql = "SELECT id,phone_firstname,phone_lastname,(CASE WHEN phone_middlename IS NULL THEN '' ELSE phone_middlename END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE 1 END) AS 'phone' from phone_data where searched_person_id in ("+id+") GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
+
+//     con.query(sql, function (err, result) {
+
+//         if (err) throw err;
+
+//         return callback(result);
+//         // if (result.length>0){
+//         // }
+//     });
+// }
+
+function showPhoneTeasure(phone,callback){
+    let sql = "SELECT id,(CASE WHEN phone_firstname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_firstname',(CASE WHEN phone_lastname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_lastname',(CASE WHEN phone_middlename IS NULL THEN '' ELSE 'Middle Name : Yes' END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE phone_dob END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE phone_state END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE phone END) AS 'phone' from phone_data where phone='"+phone+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
 
     con.query(sql, function (err, result) {
 
@@ -455,7 +458,7 @@ function showPhoneTeasure(id,callback){
 
 
 function showBirthTeasure(id,callback){
-    let sql = "SELECT id, birthRecord_firstName,birthRecord_lastName,(CASE WHEN birthRecord_middleName IS NULL THEN '' ELSE birthRecord_middleName END) AS 'birthRecord_middleName',(CASE WHEN birthRecord_dob IS NULL THEN 'N/A' ELSE birthRecord_dob END) AS 'birthRecord_dob',(CASE WHEN birthRecord_state IS NULL THEN 'N/A' ELSE birthRecord_state END) AS 'birthRecord_state' , (CASE WHEN birthRecord_country IS NULL THEN 'N/A' ELSE 1 END) AS 'birthRecord_country' from birth_record where searched_person_id in ("+id+")";
+    let sql = "SELECT id, birthRecord_firstName,birthRecord_lastName,(CASE WHEN birthRecord_middleName IS NULL THEN '' ELSE birthRecord_middleName END) AS 'birthRecord_middleName',(CASE WHEN birthRecord_dob IS NULL THEN 'N/A' ELSE 1 END) AS 'birthRecord_dob',(CASE WHEN birthRecord_state IS NULL THEN 'N/A' ELSE birthRecord_state END) AS 'birthRecord_state' , (CASE WHEN birthRecord_country IS NULL THEN 'N/A' ELSE 1 END) AS 'birthRecord_country' from birth_record where searched_person_id in ("+id+") GROUP BY birthRecord_firstName,birthRecord_lastName,birthRecord_middleName,birthRecord_dob,birthRecord_state,birthRecord_country ORDER BY id ASC";
 
 
     con.query(sql, function (err, result) {
@@ -469,7 +472,7 @@ function showBirthTeasure(id,callback){
 }
 
 function showDeathTeasure(id,callback){
-    let sql = "SELECT id, firstname,lastname,(CASE WHEN middlename IS NULL THEN '' ELSE middlename END) AS 'middlename', (CASE WHEN DateofDeath IS NULL THEN 'N/A' ELSE 1 END) AS 'DateofDeath',(CASE WHEN DateofBirth IS NULL THEN 'N/A' ELSE 1 END) AS 'DateofBirth',(CASE WHEN lastcounty IS NULL THEN 'N/A' ELSE lastcounty END) AS 'lastcounty',(CASE WHEN  State IS NULL THEN 'N/A' ELSE  State END) AS 'State' from death_record where searched_person_id in ("+id+")";
+    let sql = "SELECT id, firstname,lastname,(CASE WHEN middlename IS NULL THEN '' ELSE middlename END) AS 'middlename', (CASE WHEN DateofDeath IS NULL THEN 'N/A' ELSE 1 END) AS 'DateofDeath',(CASE WHEN DateofBirth IS NULL THEN 'N/A' ELSE 1 END) AS 'DateofBirth',(CASE WHEN lastcounty IS NULL THEN 'N/A' ELSE lastcounty END) AS 'lastcounty',(CASE WHEN  State IS NULL THEN 'N/A' ELSE  State END) AS 'State' from death_record where searched_person_id in ("+id+") GROUP BY firstname,lastname,middlename,DateofDeath,DateofBirth,lastcounty,State ORDER BY id ASC";
 
 
     con.query(sql, function (err, result) {
@@ -483,7 +486,7 @@ function showDeathTeasure(id,callback){
 }
 
 function showMDTeasure(id,callback){
-    let sql = "SELECT id, md_firstname,md_lastname,(CASE WHEN md_middlename IS NULL THEN '' ELSE md_middlename END) AS 'md_middlename',(CASE WHEN marriage_date IS NULL THEN 'N/A' ELSE 1 END) AS 'marriage_date',(CASE WHEN divorce_date IS NULL THEN 'N/A' ELSE 1 END) AS 'divorce_date' from md_record where searched_person_id in ("+id+")";
+    let sql = "SELECT id, md_firstname,md_lastname,(CASE WHEN md_middlename IS NULL THEN '' ELSE md_middlename END) AS 'md_middlename',(CASE WHEN marriage_date IS NULL THEN 'N/A' ELSE 1 END) AS 'marriage_date',(CASE WHEN divorce_date IS NULL THEN 'N/A' ELSE 1 END) AS 'divorce_date' from md_record where searched_person_id in ("+id+") GROUP BY md_firstname,md_lastname,md_middlename,marriage_date,divorce_date ORDER BY id ASC";
 
 
     con.query(sql, function (err, result) {
@@ -497,7 +500,7 @@ function showMDTeasure(id,callback){
 }
 
 function showCriminalTeasure(id,callback){
-    let sql = "SELECT id,firstname,lastname,(CASE WHEN middlename IS NULL THEN '' ELSE middlename END) AS 'middlename',(CASE WHEN dob IS NULL THEN 'N/A' ELSE 1 END) AS 'dob',(CASE WHEN state IS NULL THEN 'N/A' ELSE state END) AS 'state', (CASE WHEN address IS NULL THEN 'N/A' ELSE 1 END) AS 'address', (CASE WHEN charge_category IS NULL THEN 'N/A' ELSE 1 END) AS 'crime' from criminal_record where searched_person_id in ("+id+")";
+    let sql = "SELECT id,firstname,lastname,(CASE WHEN middlename IS NULL THEN '' ELSE middlename END) AS 'middlename',(CASE WHEN dob IS NULL THEN 'N/A' ELSE 1 END) AS 'dob',(CASE WHEN state IS NULL THEN 'N/A' ELSE state END) AS 'state', (CASE WHEN address IS NULL THEN 'N/A' ELSE 1 END) AS 'address', (CASE WHEN charge_category IS NULL THEN 'N/A' ELSE 1 END) AS 'crime' from criminal_record where searched_person_id in ("+id+") GROUP BY firstname,lastname,middlename,dob,state,address,crime ORDER BY id ASC ";
 
     con.query(sql, function (err, result) {
 
@@ -600,6 +603,17 @@ function showCriminalData(id,callback){
     });
 }
 
+function getNameWithPhone(id, callback){
+    let sql = "SELECT phone_firstname,phone_lastname from phone_data where id='"+id+"'";
+
+    con.query(sql, function (err, result) {
+
+        if (err) throw err;
+
+        return callback(result);
+    });
+}
+
 module.exports ={
     searchedPerson,
     insert_raw_json_name,
@@ -620,7 +634,7 @@ module.exports ={
     findEmailInDatabase,
     findPhoneInDatabase,
     updateSearchedPersonByEmail,
-    updateSearchedPersonByPhone,
+    // updateSearchedPersonByPhone,
     showSearchedPersonData,
     showPersonsTeasure,
     showEmailTeasure,
@@ -635,6 +649,7 @@ module.exports ={
     showBirthData,
     showDeathData,
     showMDData,
-    showCriminalData
+    showCriminalData,
+    getNameWithPhone
 
 };

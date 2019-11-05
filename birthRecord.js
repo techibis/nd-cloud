@@ -38,18 +38,14 @@ function getBirthRecord(firstName,lastName,apiArray){
                 birthRecord_state = data[i].state?data[i].state:null;
                 database.insert_birth_data(birthRecord_firstName,birthRecord_lastName,birthRecord_middleName,birthRecord_dob,birthRecord_gender,birthRecord_country,birthRecord_state);
             }
-            birthApiCAllDone(apiArray);
         }
+        birthApiCAllDone(apiArray);
     });
 };
 
 function birthApiCAllDone(apiArray){
-    let arrayCopy = [...apiArray];
-    arrayCopy.filter((item) => {
-        if (item.birth === 0) {
-            item.birth = 1;
-        }
-    });
+    console.log("Now I have the birth data");
+    apiArray.birth = 1;
 }
 
 module.exports ={

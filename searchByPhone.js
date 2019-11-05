@@ -1,8 +1,11 @@
 const parser = require('xml2json');
 var unirest = require('unirest');
 const database = require('./databaseConfig');
+const showResult = require('./showResultsFromDatabase');
 const username = "netdetectivexml";
 const password = "x1254d";
+
+
 
 let json;
 let jsonData;
@@ -16,9 +19,9 @@ let phone_city;
 let phone_state;
 let phone_zip;
 let phone_county;
-let phone;
+let phonenumber;
 
-function getDataByPhone(phone,res,callback){
+function getDataByPhone(phone,phoneApiArray,res){
 
     unirest.post('https://www.nationalpublicdata.com/feeds/FDSFeed.cfm')
     .header('Accept', 'application/json')
@@ -59,7 +62,6 @@ function getDataByPhone(phone,res,callback){
         // console.log(json);
 
         database.insert_raw_json_phone(json);
-
         if (jsonData.FDSResponse.searchResults.PeopleFinderbyAddress !==''){
             for (let i =0; i < data.length; i++) { 
 
@@ -72,12 +74,12 @@ function getDataByPhone(phone,res,callback){
                 phone_state = data[i].State?data[i].State:null;
                 phone_zip = data[i].Zip?data[i].Zip:null;
                 phone_county = data[i].County?data[i].County:null;
-                phone_phone = data[i].phone?data[i].phone:null;
+                phonenumber = data[i].Phone?data[i].Phone:null;
 
-                database.insert_phone_data(phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_city,phone_state,phone_zip,phone_county,phone);
+                database.insert_phone_data(phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_city,phone_state,phone_zip,phone_county,phonenumber);
+                phoneApiCAllDone(phoneApiArray);
             }
 
-            return callback({phone_firstname,phone_lastname});
         }else{
             res.render('searchByPhone', {phoneData: 'No Data Found', error: null});
         }
@@ -86,6 +88,9 @@ function getDataByPhone(phone,res,callback){
 
 };
 
+function phoneApiCAllDone(phoneApiArray){
+    phoneApiArray.phone = 1;
+}
 
 module.exports ={
     getDataByPhone

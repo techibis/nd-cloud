@@ -10,7 +10,9 @@
     <div class="teasure-container">  
       <% for(var i=0; i<data.length; i++) { 
         let database = data[i].database;
-        let dataId = data[i].dataId; %>
+        let dataId = data[i].dataId;
+        let firstName = data[i].firstName;
+        let lastName = data[i].lastName; %>
       <div class="teasure">
         <a href="<%= database %>/<%= dataId %>">
           <p> First Name :

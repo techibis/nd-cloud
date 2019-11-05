@@ -22,11 +22,11 @@ let person_state;
 let person_zip;
 let person_county;
 let person_phone;
-let counter =0;
-let apiArray =[{people:0},{criminal:0},{birth:0},{death:0},{marriage:0},{divorce:0}];
 
 
-function getDataByName(firstName,lastName,res){
+
+
+function getDataByName(firstName,lastName,apiArray){
 
     unirest.post('https://www.nationalpublicdata.com/feeds/FDSFeed.cfm')
     .header('Accept', 'application/json')
@@ -53,43 +53,32 @@ function getDataByName(firstName,lastName,res){
                 person_county = data[i].County?data[i].County:null;
                 person_phone = data[i].Phone?data[i].Phone:null;
                 database.insert_persons_data(person_firstName,person_lastName,person_middleName,person_dob,person_address,person_city,person_state,person_zip,person_county,person_phone)
+                peopleApiCAllDone(apiArray);
             }
         }
 
+        console.log("Sending to getCriminalRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+  apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
         criminalRecord.getCriminalRecord(firstName,lastName,apiArray);
+        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
+        console.log("Sending to getBirthRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
         birthRecord.getBirthRecord(firstName,lastName,apiArray);
+        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
+        console.log("Sending to getDeathRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
         deathRecord.getDeathRecord(firstName,lastName,apiArray);
+        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
+        console.log("Sending to getMDRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
         mDRecord.getMDRecord(firstName,lastName,apiArray);
-        
-        var interval = setInterval(function() { 
-            //  checkIfDone(firstName,lastName)
-            counter +=1;
-            console.log(apiArray);
-            peopleApiCAllDone(apiArray);
-            if ((apiArray[0]['people'])+(apiArray[0]['criminal'])+(apiArray[0]['birth'])+(apiArray[0]['death'])+(apiArray[0]['md'])===5 || counter==10){
-                myStopFunction(interval);
-                // showResult.showPersonsDatafromDatabase(firstName,lastName,res);
-                showResult.showPersonsDatafromDatabase(firstName,lastName,function(result){
-                    res.render('teasure', {data:result}); 
-                });
-            }
-        ;}, 200);
+        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
         
     });
 };
 
-function myStopFunction(interval) {
-    clearInterval(interval);
-}
+
 
 function peopleApiCAllDone(apiArray){
-    let arrayCopy = [...apiArray];
-    arrayCopy.filter((item) => {
-       if (item.people === 0) {
-           item.people = 1;
-        }
-    });
+    apiArray.people = 1;
 }
+
 
 
 module.exports ={

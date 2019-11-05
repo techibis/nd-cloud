@@ -59,8 +59,8 @@ function getMDRecord(firstName,lastName,apiArray){
         
                 database.insert_md_data(md_firstname,md_lastname,md_middlename,spouse_firstname,spouse_lastname,spouse_middlename,marriage_county,marriage_state,marriage_date,divorce_county,divorce_state,divorce_date,certificate_number,volume_number,decreetype,docketnumber);
             }
-            marriageApiCAllDone(apiArray);
         }
+        marriageApiCAllDone(apiArray);
 
         if (jsonData.FDSResponse.searchResults.DivorceSearch !==''){
             for (let i =0; i < divorceData.length; i++) { 
@@ -84,27 +84,19 @@ function getMDRecord(firstName,lastName,apiArray){
 
                 database.insert_md_data(md_firstname,md_lastname,md_middlename,spouse_firstname,spouse_lastname,spouse_middlename,marriage_county,marriage_state,marriage_date,divorce_county,divorce_state,divorce_date,certificate_number,volume_number,decreetype,docketnumber);
             }
-            divorceApiCAllDone(apiArray);
         }
+        divorceApiCAllDone(apiArray);
     });
 };
 
 function marriageApiCAllDone(apiArray){
-    let arrayCopy = [...apiArray];
-    arrayCopy.filter((item) => {
-        if (item.marriage === 0) {
-            item.marriage = 1;
-        }
-    });
+    console.log("Now I have the marriage data");
+    apiArray.marriage = 1;
 }
 
 function divorceApiCAllDone(apiArray){
-    let arrayCopy = [...apiArray];
-    arrayCopy.filter((item) => {
-        if (item.divorce === 0) {
-            item.divorce = 1;
-        }
-    });
+    console.log("Now I have the divorce data");
+    apiArray.divorce = 1;
 }
 
 module.exports ={

@@ -38,18 +38,14 @@ function getDeathRecord(firstName,lastName,apiArray){
                 State = data[i].State?data[i].State:null;
                 database.insert_death_data(firstname,lastname,middlename,DateofDeath,DateofBirth,lastcounty,State);
             }
-            deathApiCAllDone(apiArray);
         }
+        deathApiCAllDone(apiArray);
     });
 };
 
 function deathApiCAllDone(apiArray){
-    let arrayCopy = [...apiArray];
-    arrayCopy.filter((item) => {
-        if (item.death === 0) {
-            item.death = 1;
-        }
-    });
+    console.log("Now I have the death data");
+    apiArray.death = 1;
 }
 
 module.exports ={

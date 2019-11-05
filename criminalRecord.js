@@ -66,7 +66,6 @@ function getCriminalRecord(firstName,lastName,apiArray){
     .send({ "xml": "<FDSRequest><username>"+username+"</username><password>"+password+"</password><sType>CRLMG</sType><detail>1</detail><testmode>false</testmode><searchParams><LastName>"+lastName+"</LastName><FirstName>"+firstName+"</FirstName><State></State><DOB></DOB></searchParams></FDSRequest>" })
     .end(function (response) {
         json = parser.toJson(response.body);
-        // console.log(json);
         jsonData = JSON.parse(json);
         data = jsonData.FDSResponse.searchResults.CriminalSearch.Result;
         let text = "This is a huge text and i cant insert that into database";
@@ -129,18 +128,14 @@ function getCriminalRecord(firstName,lastName,apiArray){
 
                 database.insert_criminal_data(firstname,lastname,middlename,generation,dob,birth_state,age,casenumber,aka1,aka2,dobaka,address,address2,city,state,zip,haircolor,eyecolor,height,weight,race,sex,skintone,scarsmarks,military_service,charge_category,charges_filed_date,offense_date,offense_code,offensedescription1,offensedescription2,ncic_code,counts,plea,conviction_date,conviction_place,court,source,sentenceyyymmddd,probationyyymmddd,disposition,crb,dispositiondate,court_costs,arresting_agency,case_type,fines,source_name,source_state,mugshot);
             }
-            criminalApiCAllDone(apiArray);
         }
+        criminalApiCAllDone(apiArray);
     });
 };
 
 function criminalApiCAllDone(apiArray){
-    let arrayCopy = [...apiArray];
-    arrayCopy.filter((item) => {
-        if (item.criminal === 0) {
-            item.criminal = 1;
-        }
-    });
+    console.log("Now I have the criminal data");
+    apiArray.criminal = 1;
 }
 
 module.exports ={
