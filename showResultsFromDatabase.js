@@ -34,7 +34,6 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
             dataId += ','; 
             }
             dataId += result[i].id;
-            // console.log(dataId);
         }
         console.log(resultData);
         console.log("0");
@@ -187,16 +186,18 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
     })
 
 }
+
 console.log(resultData);
 
 function showPhoneDataFromDatabase(phone,callback){
-    emptyArray();
+    let phoneDatas = new Array();
+    console.log("i am inside of phone data show ");
     database.showPhoneTeasure(phone, function(result){
         console.log("7");
         console.log(resultData);
         if(result){
             for (let i=0;i<result.length;i++){
-                resultData.push(new Resultrecord(
+                phoneDatas.push(new Resultrecord(
                 result[i].phone_firstname,
                 result[i].phone_lastname,
                 result[i].phone_middlename,
@@ -212,7 +213,7 @@ function showPhoneDataFromDatabase(phone,callback){
                 'Phone'
                 ));
             }
-            return callback(resultData);
+            return callback(phoneDatas);
         }
     })
 }

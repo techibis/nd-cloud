@@ -261,5 +261,3 @@ function setApiArrayValues(){
     apiArray.marriage = 1;
     apiArray.divorce = 1;
 }
-
-
