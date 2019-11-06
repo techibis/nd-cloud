@@ -19,12 +19,12 @@ class Resultrecord{
 }
   
 let resultData = new Array();
+let names;
 
 
-function showPersonsDatafromDatabase(firstName,lastName,callback){
+function showPersonsDatafromDatabase(firstName,lastName,show,callback){
 
    emptyArray();
-   console.log(resultData);
 
     database.showSearchedPersonData(firstName,lastName, function(result){
         let dataId = '';
@@ -35,16 +35,20 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
             }
             dataId += result[i].id;
         }
-        console.log(resultData);
-        console.log("0");
+
         database.showPersonsTeasure(dataId, function(result){
             if (result){
-                console.log(result);
+
                 for (let i=0;i<result.length;i++){
+                    names = checkName(result[i].firstName,result[i].lastName,result[i].middleName,show);
+                    names.split(",");
+                    firstName=names.split(",")[0];
+                    lastName =names.split(",")[1];
+                    middleName =names.split(",")[2];
                     resultData.push(new Resultrecord(
-                    result[i].firstName,
-                    result[i].lastName,
-                    result[i].middleName,
+                    firstName,
+                    lastName,
+                    middleName,
                     result[i].age,
                     result[i].state,
                     result[i].locations,
@@ -60,16 +64,20 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
 
             }
         })
-        console.log(resultData);
-        console.log("1");
+
         database.showEmailTeasure(dataId, function(result){
             if(result){
                 console.log(result);
                 for (let i=0;i<result.length;i++){
+                    names = checkName(result[i].emailData_firstName,result[i].emailData_lastName,'',show);
+                    names.split(",");
+                    firstName=names.split(",")[0];
+                    lastName =names.split(",")[1];
+                    middleName =names.split(",")[2];
                     resultData.push(new Resultrecord(
-                    result[i].emailData_firstName,
-                    result[i].emailData_lastName,
-                    '',
+                    firstName,
+                    lastName,
+                    middleName,
                     'N/A',
                     'N/A',
                     result[i].emailData_location,
@@ -84,18 +92,19 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             }
         })
-        console.log(resultData);
-        console.log("2");
-
 
         database.showBirthTeasure(dataId, function(result){
             if(result){
-                console.log(result);
                 for (let i=0;i<result.length;i++){
+                    names = checkName(result[i].birthRecord_firstName,result[i].birthRecord_lastName,result[i].birthRecord_middleName,show);
+                    names.split(",");
+                    firstName=names.split(",")[0];
+                    lastName =names.split(",")[1];
+                    middleName =names.split(",")[2];
                     resultData.push(new Resultrecord(
-                    result[i].birthRecord_firstName,
-                    result[i].birthRecord_lastName,
-                    result[i].birthRecord_middleName,
+                    firstName,
+                    lastName,
+                    middleName,
                     result[i].birthRecord_dob,
                     result[i].birthRecord_state,
                     result[i].birthRecord_country,
@@ -110,15 +119,19 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             };
         });
-        console.log(resultData);
-        console.log("3");
+
         database.showDeathTeasure(dataId, function(result){
             if(result){
                 for (let i=0;i<result.length;i++){
+                    names = checkName(result[i].firstname,result[i].lastname,result[i].middlename,show);
+                    names.split(",");
+                    firstName=names.split(",")[0];
+                    lastName =names.split(",")[1];
+                    middleName =names.split(",")[2];
                     resultData.push(new Resultrecord(
-                    result[i].firstname,
-                    result[i].lastname,
-                    result[i].middlename,
+                    firstName,
+                    lastName,
+                    middleName,
                     result[i].DateofBirth,
                     result[i].State,
                     result[i].lastcounty,
@@ -133,15 +146,19 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             };
         });
-        console.log(resultData);
-        console.log("4");
+
         database.showMDTeasure(dataId, function(result){
             if(result){
                 for (let i=0;i<result.length;i++){
+                    names = checkName(result[i].md_firstname,result[i].md_lastname,result[i].md_middlename,show);
+                    names.split(",");
+                    firstName=names.split(",")[0];
+                    lastName =names.split(",")[1];
+                    middleName =names.split(",")[2];
                     resultData.push(new Resultrecord(
-                    result[i].md_firstname,
-                    result[i].md_lastname,
-                    result[i].md_middlename,
+                    firstName,
+                    lastName,
+                    middleName,
                     'N/A',
                     'N/A',
                     'N/A',
@@ -156,15 +173,19 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
                 }
             };
         });
-        console.log(resultData);
-        console.log("5");
+
         database.showCriminalTeasure(dataId, function(result){
             if(result){
                 for (let i=0;i<result.length;i++){
+                    names = checkName(result[i].firstname,result[i].lastname,result[i].middlename,show);
+                    names.split(",");
+                    firstName=names.split(",")[0];
+                    lastName =names.split(",")[1];
+                    middleName =names.split(",")[2];
                     resultData.push(new Resultrecord(
-                    result[i].firstname,
-                    result[i].lastname,
-                    result[i].middlename,
+                    firstName,
+                    lastName,
+                    middleName,
                     result[i].dob,
                     result[i].state,
                     result[i].address,
@@ -180,21 +201,18 @@ function showPersonsDatafromDatabase(firstName,lastName,callback){
             };
             return callback(resultData);
         });
-        console.log(resultData);
-        console.log("6");
 
     })
 
 }
 
-console.log(resultData);
+
 
 function showPhoneDataFromDatabase(phone,callback){
     let phoneDatas = new Array();
-    console.log("i am inside of phone data show ");
+    emptyPhoneDataArray(phoneDatas);
+    
     database.showPhoneTeasure(phone, function(result){
-        console.log("7");
-        console.log(resultData);
         if(result){
             for (let i=0;i<result.length;i++){
                 phoneDatas.push(new Resultrecord(
@@ -222,8 +240,28 @@ function emptyArray(){
     resultData.length=0;
 }
 
+function emptyPhoneDataArray(phoneDatas){
+    phoneDatas.length=0;
+}
+
+
 module.exports ={
     showPersonsDatafromDatabase,
     showPhoneDataFromDatabase
 };
         
+function checkName(firstname,lastname,middlename,show){
+    let  newfirstname;
+    let newlastname;
+    let  newmiddlename;
+    if(show==0){
+        newfirstname="Available";
+         newlastname = "Available";
+        newmiddlename = "";
+    }else{
+        newfirstname=firstname;
+        newlastname=lastname;
+        newmiddlename=middlename;
+    }
+    return newfirstname+","+newlastname+","+newmiddlename;
+}

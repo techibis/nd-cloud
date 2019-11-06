@@ -21,7 +21,7 @@ let phone_zip;
 let phone_county;
 let phonenumber;
 
-function getDataByPhone(phone,phoneApiArray,res){
+function getDataByPhone(phone,phoneApiArray){
 
     unirest.post('https://www.nationalpublicdata.com/feeds/FDSFeed.cfm')
     .header('Accept', 'application/json')
@@ -77,20 +77,16 @@ function getDataByPhone(phone,phoneApiArray,res){
                 phonenumber = data[i].Phone?data[i].Phone:null;
 
                 database.insert_phone_data(phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_city,phone_state,phone_zip,phone_county,phonenumber);
-                phoneApiCAllDone(phoneApiArray);
+                
             }
-
-        }else{
-            res.render('searchByPhone', {phoneData: 'No Data Found', error: null});
+            
         }
+        phoneApiArray.phone = 1;
     });
 
 
 };
 
-function phoneApiCAllDone(phoneApiArray){
-    phoneApiArray.phone = 1;
-}
 
 module.exports ={
     getDataByPhone

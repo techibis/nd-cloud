@@ -55,20 +55,19 @@ function getDataByName(firstName,lastName,apiArray){
                 database.insert_persons_data(person_firstName,person_lastName,person_middleName,person_dob,person_address,person_city,person_state,person_zip,person_county,person_phone)
                 peopleApiCAllDone(apiArray);
             }
+            criminalRecord.getCriminalRecord(firstName,lastName,apiArray);
+            birthRecord.getBirthRecord(firstName,lastName,apiArray);
+            deathRecord.getDeathRecord(firstName,lastName,apiArray);
+            mDRecord.getMDRecord(firstName,lastName,apiArray);
+        }else{
+            apiArray.people = 1;
+            apiArray.criminal = 1;
+            apiArray.birth = 1;
+            apiArray.death = 1;
+            apiArray.marriage = 1;
+            apiArray.divorce = 1;
         }
 
-        console.log("Sending to getCriminalRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+  apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
-        criminalRecord.getCriminalRecord(firstName,lastName,apiArray);
-        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
-        console.log("Sending to getBirthRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
-        birthRecord.getBirthRecord(firstName,lastName,apiArray);
-        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
-        console.log("Sending to getDeathRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
-        deathRecord.getDeathRecord(firstName,lastName,apiArray);
-        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
-        console.log("Sending to getMDRecord: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
-        mDRecord.getMDRecord(firstName,lastName,apiArray);
-        console.log("Now I have an array with: " + apiArray.people.toString()+ apiArray.criminal.toString()+ apiArray.birth.toString()+ + apiArray.death.toString() + apiArray.marriage.toString()+ apiArray.divorce.toString());
         
     });
 };

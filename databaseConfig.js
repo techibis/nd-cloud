@@ -15,7 +15,18 @@ let con = mysql.createConnection({
 
 
 function searchedPerson(firstName, lastName, email, phone){
-    let sql = "INSERT INTO searched_person (first_name, last_name, email, phone, time) VALUES ('"+firstName+"','"+lastName+"','"+email+"','"+phone+"','"+currentDatetime+"')";
+    let sql = "INSERT INTO searched_person ("
+    if(firstName!=null) sql+="first_name,";
+    if(lastName!=null) sql+="last_name,";
+    if(email!=null) sql+="email,";
+    if(phone!=null) sql+="phone,";
+    sql+="time) VALUES (";
+    if(firstName!=null) sql+="'"+firstName+"',";
+    if(lastName!=null) sql+="'"+lastName+"',";
+    if(email!=null) sql+="'"+email+"',";
+    if(phone!=null) sql+="'"+phone+"',";
+    sql+="'"+currentDatetime+"')";
+
     con.query(sql, function (err, result) {
         if (err) { throw err; }
         else {
@@ -24,7 +35,7 @@ function searchedPerson(firstName, lastName, email, phone){
     });
 }
 
-function updateSearchedPersonByEmail(firstName, lastName, email, phone){
+function updateSearchedPersonByEmail(firstName,lastName,email){
     let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where email='"+email+"'";
     con.query(sql, function (err, result) {
     if (err) {throw err;}
@@ -32,13 +43,6 @@ function updateSearchedPersonByEmail(firstName, lastName, email, phone){
     });
 }
 
-// function updateSearchedPersonByPhone(firstName, lastName, email, phone){
-//     let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where phone='"+phone+"'";
-//     con.query(sql, function (err, result) {
-//     if (err) {throw err;}
-//     console.log('1 record updated');
-//     });
-// }
 
 function findNameInDatabase(firstName, lastName,callback) {
     let sql = "SELECT * from searched_person where first_name='"+firstName+"' and last_name= '"+lastName+"'";
@@ -444,7 +448,7 @@ function showEmailTeasure(id,callback){
 // }
 
 function showPhoneTeasure(phone,callback){
-    let sql = "SELECT id,(CASE WHEN phone_firstname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_firstname',(CASE WHEN phone_lastname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_lastname',(CASE WHEN phone_middlename IS NULL THEN '' ELSE 'Middle Name : Yes' END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE phone_dob END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE phone_state END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE phone END) AS 'phone' from phone_data where phone='"+phone+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
+    let sql = "SELECT id,(CASE WHEN phone_firstname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_firstname',(CASE WHEN phone_lastname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_lastname',(CASE WHEN phone_middlename IS NULL THEN '' ELSE 'Middle Name : Yes' END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE (year(curdate())-year(phone_dob) - (right(curdate(),5) < right(phone_dob,5))) END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE phone_state END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE phone END) AS 'phone' from phone_data where phone='"+phone+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
 
     con.query(sql, function (err, result) {
 

@@ -8,45 +8,50 @@
   </head>
   <body>
     <div class="teasure-container">  
-      <% for(var i=0; i<data.length; i++) { 
-        let database = data[i].database;
-        let dataId = data[i].dataId;
-        let firstName = data[i].firstName;
-        let lastName = data[i].lastName; %>
-      <div class="teasure">
-        <a href="<%= database %>/<%= dataId %>">
-          <p> First Name :
-            <%= data[i].firstName %> <%= data[i].middleName %>
-          </p>
-          <p> Last Name :
-            <%= data[i].lastName %>
-          </p>
-          <p> Birth Record :
-            <%= data[i].age %>
-          </p>
-          <p>State :
-            <%= data[i].state %>
-          </p>
-          <p> Locations :
-            <%= data[i].locations %>
-          </p>
-          <p> Background :
-            <%= data[i].background %>
-          </p>
-          <p> Death Record:
-            <%= data[i].death %>
-          </p>
-          <p> Marriage Record :
-            <%= data[i].marriage %>
-          </p>
-          <p> Divorce Record :
-            <%= data[i].divorce %>
-          </p>
-          <p> Contact Information :
-            <%= data[i].contact %>
-          </p>
-        </a>
-      </div>
+    <% if((data.length)!==0){
+        for(var i=0; i<data.length; i++) { 
+          let database = data[i].database;
+          let dataId = data[i].dataId;
+          let firstName = data[i].firstName;
+          let lastName = data[i].lastName; %>
+          <div class="teasure">
+            <a href="<%= database %>/<%= dataId %>">
+              <p> First Name :
+                <%= data[i].firstName %> <%= data[i].middleName %>
+              </p>
+              <p> Last Name :
+                <%= data[i].lastName %>
+              </p>
+              <p> Birth Record :
+                <%= data[i].age %>
+              </p>
+              <p>State :
+                <%= data[i].state %>
+              </p>
+              <p> Locations :
+                <%= data[i].locations %>
+              </p>
+              <p> Background :
+                <%= data[i].background %>
+              </p>
+              <p> Death Record:
+                <%= data[i].death %>
+              </p>
+              <p> Marriage Record :
+                <%= data[i].marriage %>
+              </p>
+              <p> Divorce Record :
+                <%= data[i].divorce %>
+              </p>
+              <p> Contact Information :
+                <%= data[i].contact %>
+              </p>
+            </a>
+          </div>
+      <%
+        }}else{
+      %>
+      <p> Sorry No Data Found</p>
       <%
         }
       %>
