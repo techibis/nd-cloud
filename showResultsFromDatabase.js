@@ -1,4 +1,5 @@
 const database = require('./databaseConfig');
+const moment = require('moment');
 
 class Resultrecord{
     constructor (firstName,lastName,middleName,age,state,locations,background,death,marriage,divorce,contact,dataId,database){
@@ -41,7 +42,6 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
 
                 for (let i=0;i<result.length;i++){
                     names = checkName(result[i].firstName,result[i].lastName,result[i].middleName,show);
-                    names.split(",");
                     firstName=names.split(",")[0];
                     lastName =names.split(",")[1];
                     middleName =names.split(",")[2];
@@ -67,10 +67,9 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
 
         database.showEmailTeasure(dataId, function(result){
             if(result){
-                console.log(result);
+                
                 for (let i=0;i<result.length;i++){
                     names = checkName(result[i].emailData_firstName,result[i].emailData_lastName,'',show);
-                    names.split(",");
                     firstName=names.split(",")[0];
                     lastName =names.split(",")[1];
                     middleName =names.split(",")[2];
@@ -97,7 +96,6 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
             if(result){
                 for (let i=0;i<result.length;i++){
                     names = checkName(result[i].birthRecord_firstName,result[i].birthRecord_lastName,result[i].birthRecord_middleName,show);
-                    names.split(",");
                     firstName=names.split(",")[0];
                     lastName =names.split(",")[1];
                     middleName =names.split(",")[2];
@@ -124,7 +122,6 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
             if(result){
                 for (let i=0;i<result.length;i++){
                     names = checkName(result[i].firstname,result[i].lastname,result[i].middlename,show);
-                    names.split(",");
                     firstName=names.split(",")[0];
                     lastName =names.split(",")[1];
                     middleName =names.split(",")[2];
@@ -151,7 +148,6 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
             if(result){
                 for (let i=0;i<result.length;i++){
                     names = checkName(result[i].md_firstname,result[i].md_lastname,result[i].md_middlename,show);
-                    names.split(",");
                     firstName=names.split(",")[0];
                     lastName =names.split(",")[1];
                     middleName =names.split(",")[2];
@@ -178,7 +174,6 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
             if(result){
                 for (let i=0;i<result.length;i++){
                     names = checkName(result[i].firstname,result[i].lastname,result[i].middlename,show);
-                    names.split(",");
                     firstName=names.split(",")[0];
                     lastName =names.split(",")[1];
                     middleName =names.split(",")[2];
@@ -210,16 +205,20 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
 
 function showPhoneDataFromDatabase(phone,callback){
     let phoneDatas = new Array();
+    let age;
+
     emptyPhoneDataArray(phoneDatas);
     
     database.showPhoneTeasure(phone, function(result){
         if(result){
             for (let i=0;i<result.length;i++){
+                age = calculateAge(result[i].phone_dob);
+
                 phoneDatas.push(new Resultrecord(
                 result[i].phone_firstname,
                 result[i].phone_lastname,
                 result[i].phone_middlename,
-                result[i].phone_dob,
+                age,
                 result[i].phone_state,
                 result[i].phone_address,
                 'N/A',
@@ -244,11 +243,6 @@ function emptyPhoneDataArray(phoneDatas){
     phoneDatas.length=0;
 }
 
-
-module.exports ={
-    showPersonsDatafromDatabase,
-    showPhoneDataFromDatabase
-};
         
 function checkName(firstname,lastname,middlename,show){
     let  newfirstname;
@@ -265,3 +259,23 @@ function checkName(firstname,lastname,middlename,show){
     }
     return newfirstname+","+newlastname+","+newmiddlename;
 }
+
+function calculateAge(date){
+    let age;
+    if(date !== 'N/A'){
+        let seconds = date;
+        let year = seconds.split("/")[2];
+        let d = new Date();
+        let currentYear = d.getFullYear();
+        age = (currentYear-year)+" Years";
+
+    }else{
+        age = date;
+    }
+    return age;
+}
+
+module.exports ={
+    showPersonsDatafromDatabase,
+    showPhoneDataFromDatabase
+};

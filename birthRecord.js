@@ -44,7 +44,6 @@ function getBirthRecord(firstName,lastName,apiArray){
 };
 
 function birthApiCAllDone(apiArray){
-    console.log("Now I have the birth data");
     apiArray.birth = 1;
 }
 

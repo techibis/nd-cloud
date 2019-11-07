@@ -40,7 +40,6 @@ app.post('/', function (req, res) {
     })
 
     interval = setInterval(function(){checkIfDone(firstName,lastName,res,1)}, 200);
-    console.log("I just defined a new interval and called it " + interval);
 
 });
 
@@ -60,7 +59,7 @@ app.post('/email', function (req, res) {
         if(response.length==0){
             database.searchedPerson(null,null,email,null);
             getEmailData.getDataByEmail(email,emailApiArray,function(response){
-                console.log(response);
+
                 emailData_firstName = response.emailData_firstName;
                 emailData_lastName = response.emailData_lastName;
             
@@ -155,7 +154,6 @@ app.get('/Phone/:id', function (req, res) {
 
 
         interval = setInterval(function(){checkIfDone(firstName,lastName,res)}, 200);
-        console.log("I just defined a new interval and called it " + interval);
     });
 });
 
@@ -253,7 +251,6 @@ function checkIfEmailApiCallDone(emailData_firstName,emailData_lastName,res) {
 
         if (emailData_firstName !=null && emailData_lastName !=null ){
             interval = setInterval(function(){checkIfDone(emailData_firstName,emailData_lastName,res,0)}, 200);
-            console.log("I just defined a new interval and called it " + interval);
         }else{
             res.render('teasure', {data:''}); 
         }

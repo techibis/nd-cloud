@@ -134,7 +134,6 @@ function getCriminalRecord(firstName,lastName,apiArray){
 };
 
 function criminalApiCAllDone(apiArray){
-    console.log("Now I have the criminal data");
     apiArray.criminal = 1;
 }
 

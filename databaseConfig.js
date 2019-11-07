@@ -39,7 +39,6 @@ function updateSearchedPersonByEmail(firstName,lastName,email){
     let sql = "UPDATE searched_person SET first_name = '"+firstName+"', last_name= '"+lastName+"' where email='"+email+"'";
     con.query(sql, function (err, result) {
     if (err) {throw err;}
-    // console.log('1 record updated');
     });
 }
 
@@ -448,7 +447,7 @@ function showEmailTeasure(id,callback){
 // }
 
 function showPhoneTeasure(phone,callback){
-    let sql = "SELECT id,(CASE WHEN phone_firstname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_firstname',(CASE WHEN phone_lastname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_lastname',(CASE WHEN phone_middlename IS NULL THEN '' ELSE 'Middle Name : Yes' END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE (year(curdate())-year(phone_dob) - (right(curdate(),5) < right(phone_dob,5))) END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE phone_state END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE phone END) AS 'phone' from phone_data where phone='"+phone+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
+    let sql = "SELECT id,(CASE WHEN phone_firstname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_firstname',(CASE WHEN phone_lastname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_lastname',(CASE WHEN phone_middlename IS NULL THEN '' ELSE ', Middle Name : Yes' END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE phone_dob END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE phone_state END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE phone END) AS 'phone' from phone_data where phone='"+phone+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
 
     con.query(sql, function (err, result) {
 

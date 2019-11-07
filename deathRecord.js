@@ -44,7 +44,6 @@ function getDeathRecord(firstName,lastName,apiArray){
 };
 
 function deathApiCAllDone(apiArray){
-    console.log("Now I have the death data");
     apiArray.death = 1;
 }
 

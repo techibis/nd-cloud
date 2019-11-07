@@ -90,12 +90,10 @@ function getMDRecord(firstName,lastName,apiArray){
 };
 
 function marriageApiCAllDone(apiArray){
-    console.log("Now I have the marriage data");
     apiArray.marriage = 1;
 }
 
 function divorceApiCAllDone(apiArray){
-    console.log("Now I have the divorce data");
     apiArray.divorce = 1;
 }
 
