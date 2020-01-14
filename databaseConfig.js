@@ -104,6 +104,75 @@ function insert_persons_data(person_firstName,person_lastName,person_middleName,
     });
 }
 
+function insert_raw_json_cell(cell_data_json){
+    let sql = "INSERT INTO raw_json_cell (cell_data_json,data_source,searched_person_id,time) VALUES ('"+cell_data_json+"','Cell Phone Number Lookup','"+searchedPersonId+"', '"+currentDatetime+"')";
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+    });
+}
+
+function insert_cell_data_name(cell_firstName,cell_lastName,cell_middleName,phone){
+    let sql = "INSERT INTO cell_data_name ("
+    if(cell_firstName!=null && typeof cell_firstName!=='object') sql+="cell_firstName,";
+    if(cell_lastName!=null && typeof cell_lastName !=='object') sql+="cell_lastName,";
+    if(cell_middleName!=null && typeof cell_middleName !=='object') sql+="cell_middleName,";
+    if(phone!=null && typeof phone !=='object') sql+="cellPhone,";
+    if(searchedPersonId!=null) sql+="searched_person_id) VALUES (";
+    if(cell_firstName!=null && typeof cell_firstName !=='object') sql+="'"+cell_firstName+"',";
+    if(cell_lastName!=null && typeof cell_lastName !=='object') sql+="'"+cell_lastName+"',";
+    if(cell_middleName!=null && typeof cell_middleName !=='object') sql+="'"+cell_middleName+"',";
+    if(phone!=null && typeof phone !=='object') sql+="'"+phone+"',";
+    if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+    });
+}
+
+function insert_cell_data_dob(cell_dob){
+    let sql = "INSERT INTO cell_data_dob ("
+    if(cell_dob!=null && typeof cell_dob!=='object') sql+="cell_dob,";
+    if(searchedPersonId!=null) sql+="searched_person_id) VALUES (";
+    if(cell_dob!=null && typeof cell_dob !=='object') sql+="'"+cell_dob+"',";
+    if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+    });
+}
+
+function insert_cell_data_email(cell_email){
+    let sql = "INSERT INTO cell_data_email ("
+    if(cell_email!=null && typeof cell_email!=='object') sql+="cell_email,";
+    if(searchedPersonId!=null) sql+="searched_person_id) VALUES (";
+    if(cell_email!=null && typeof cell_email !=='object') sql+="'"+cell_email+"',";
+    if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+    });
+}
+
+function insert_cell_data_address(cell_fullStreet,cell_city,cell_state,cell_zip,cell_subdivisionName,cell_firstDate,cell_lastDate){
+    let sql = "INSERT INTO cell_data_address ("
+    if(cell_fullStreet!=null && typeof cell_fullStreet!=='object') sql+="cell_fullStreet,";
+    if(cell_city!=null && typeof cell_city !=='object') sql+="cell_city,";
+    if(cell_state!=null && typeof cell_state !=='object') sql+="cell_state,";
+    if(cell_zip!=null && typeof cell_zip !== 'object') sql+="cell_zip,";
+    if(cell_subdivisionName!=null && typeof cell_subdivisionName !== 'object') sql+="cell_subdivisionName,";
+    if(cell_firstDate!=null && typeof cell_firstDate!=='object') sql+="cell_firstDate,";
+    if(cell_lastDate!=null && typeof cell_lastDate !=='object') sql+="cell_lastDate,";
+    if(searchedPersonId!=null) sql+="searched_person_id) VALUES (";
+    if(cell_fullStreet!=null && typeof cell_fullStreet !=='object') sql+="'"+cell_fullStreet+"',";
+    if(cell_city!=null && typeof cell_city !=='object') sql+="'"+cell_city+"',";
+    if(cell_state!=null && typeof cell_state !=='object') sql+="'"+cell_state+"',";
+    if(cell_zip!=null && typeof cell_zip!=='object') sql+="'"+cell_zip+"',";
+    if(cell_subdivisionName!=null && typeof cell_subdivisionName !== 'object') sql+="'"+cell_subdivisionName+"',";
+    if(cell_firstDate!=null && typeof cell_firstDate !=='object') sql+="'"+cell_firstDate+"',";
+    if(cell_lastDate!=null && typeof cell_lastDate !=='object') sql+="'"+cell_lastDate+"',";
+    if(searchedPersonId!=null) sql+="'"+searchedPersonId+"')";
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+    });
+}
+
 function insert_raw_json_phone(phoneData_str){
     let sql = "INSERT INTO raw_json_phone (phone_data_json,data_source,searched_person_id,time) VALUES ('"+phoneData_str+"','Phone Number Lookup','"+searchedPersonId+"', '"+currentDatetime+"')";
     con.query(sql, function (err, result) {
@@ -433,21 +502,33 @@ function showEmailTeasure(id,callback){
     });
 }
 
-// function showPhoneTeasure(id,callback){
-//     let sql = "SELECT id,phone_firstname,phone_lastname,(CASE WHEN phone_middlename IS NULL THEN '' ELSE phone_middlename END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE 1 END) AS 'phone' from phone_data where searched_person_id in ("+id+") GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
+function showPhoneNameTeasure(firstname,lastname,callback){
+    let sql = "SELECT id,phone_firstname,phone_lastname,(CASE WHEN phone_middlename IS NULL THEN '' ELSE phone_middlename END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE 1 END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE 1 END) AS 'phone' from phone_data where phone_firstname ='"+firstname+"' AND phone_lastname='"+lastname+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
 
-//     con.query(sql, function (err, result) {
+    con.query(sql, function (err, result) {
 
-//         if (err) throw err;
+        if (err) throw err;
 
-//         return callback(result);
-//         // if (result.length>0){
-//         // }
-//     });
-// }
+        return callback(result);
+        // if (result.length>0){
+        // }
+    });
+}
+
+
+function showCellPhoneTeasure(id,callback){
+
+    let sql = "select (select count(*) from (SELECT COUNT(cell_firstName) AS cell_firstName from cell_data_name where searched_person_id='"+id+"' GROUP BY cell_firstName) as first ) as cell_firstName,(select count(*) from (SELECT COUNT(cell_lastName) AS cell_lastName from cell_data_name where searched_person_id='"+id+"' GROUP BY cell_lastName)as last) as cell_lastName,(select count(*) from (SELECT  COUNT(cell_middleName) AS cell_middleName from cell_data_name where searched_person_id='"+id+"' GROUP BY cell_middleName) as middle) as cell_middleName,(select count(*) from (SELECT  COUNT(cellPhone) AS cellPhone from cell_data_name where searched_person_id='"+id+"' GROUP BY cellPhone) as phone) as cellPhone,(select count(*) from (SELECT COUNT(cell_email) AS email from cell_data_email where searched_person_id ='"+id+"' GROUP BY cell_email) as email ) AS cell_email,(select count(*) from (SELECT COUNT(cell_dob) AS dob from cell_data_dob where searched_person_id ='"+id+"' GROUP BY cell_dob) as dob) AS cell_dob,(select count(*) from (SELECT COUNT(cell_fullStreet) AS location from cell_data_address where searched_person_id='"+id+"' GROUP BY cell_fullStreet) as street) AS cell_fullStreet,(select count(*) from (SELECT COUNT(cell_state) AS state from cell_data_address where searched_person_id='"+id+"' GROUP BY cell_state) as state) AS cell_state";
+
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        return callback(result);
+    });
+}
+
 
 function showPhoneTeasure(phone,callback){
-    let sql = "SELECT id,(CASE WHEN phone_firstname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_firstname',(CASE WHEN phone_lastname IS NULL THEN '' ELSE 'Yes' END) AS 'phone_lastname',(CASE WHEN phone_middlename IS NULL THEN '' ELSE ', Middle Name : Yes' END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE phone_dob END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE phone_state END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE phone END) AS 'phone' from phone_data where phone='"+phone+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
+    let sql = "SELECT id,(CASE WHEN phone_firstname IS NULL THEN 'N/A' ELSE 'Yes' END) AS 'phone_firstname',(CASE WHEN phone_lastname IS NULL THEN 'N/A' ELSE 'Yes' END) AS 'phone_lastname',(CASE WHEN phone_middlename IS NULL THEN 'N/A' ELSE 'Yes' END) AS 'phone_middlename',(CASE WHEN phone_dob IS NULL THEN 'N/A' ELSE phone_dob END) AS 'phone_dob',(CASE WHEN phone_address IS NULL THEN 'N/A' ELSE phone_address END) AS 'phone_address', (CASE WHEN phone_state IS NULL THEN 'N/A' ELSE phone_state END) AS 'phone_state',(CASE WHEN phone IS NULL THEN 'N/A' ELSE phone END) AS 'phone' from phone_data where phone='"+phone+"' GROUP BY phone_firstname,phone_lastname,phone_middlename,phone_dob,phone_address,phone_state,phone ORDER BY id ASC";
 
     con.query(sql, function (err, result) {
 
@@ -542,6 +623,7 @@ function showEmailData(id,callback){
 }
 
 function showPhoneData(id,callback){
+
     let sql = "SELECT * from phone_data where id ='"+id+"'";
 
     con.query(sql, function (err, result) {
@@ -566,6 +648,7 @@ function showBirthData(id,callback){
         }
     });
 }
+
 
 function showDeathData(id,callback){
     let sql = "SELECT * FROM `death_record` WHERE id ='"+id+"'";
@@ -607,7 +690,7 @@ function showCriminalData(id,callback){
 }
 
 function getNameWithPhone(id, callback){
-    let sql = "SELECT phone_firstname,phone_lastname from phone_data where id='"+id+"'";
+    let sql = "SELECT phone_firstname,phone_lastname,searched_person_id from phone_data where id='"+id+"'";
 
     con.query(sql, function (err, result) {
 
@@ -617,10 +700,96 @@ function getNameWithPhone(id, callback){
     });
 }
 
+function getSearchedId(phone, callback){
+    let sql = "SELECT id from searched_person where phone='"+phone+"'";
+
+    con.query(sql, function (err, result) {
+
+        if (err) throw err;
+
+        return callback(result);
+    });
+}
+
+function showCellphoneData(id, callback){
+
+    let cellData ={names:[],dobs:[],emails:[],addreses:[]};
+
+
+    let sql1 = "SELECT cell_firstName,cell_lastName,cell_middleName,cellPhone from cell_data_name where searched_person_id='"+id+"' GROUP BY cell_firstName,cell_lastName,cell_middleName,cellPhone ORDER BY id ASC";
+    
+    let sql2 = "SELECT cell_dob from cell_data_dob where searched_person_id ='"+id+"' GROUP BY cell_dob ORDER BY id ASC";
+    
+    let sql3 = "SELECT cell_email from cell_data_email where searched_person_id ='"+id+"' GROUP BY cell_email ORDER BY id ASC";
+    
+    let sql4 = "SELECT * from cell_data_address where searched_person_id='"+id+"' GROUP BY cell_fullStreet,cell_city,cell_state,cell_zip,cell_subdivisionName ORDER BY id ASC";
+    
+
+    con.query(sql1, function (err, result) {
+
+        if (err) throw err;
+        cellData.names = result;
+    });
+
+    con.query(sql2, function (err, result) {
+
+        if (err) throw err;
+        cellData.dobs = result;
+    });
+    con.query(sql3, function (err, result) {
+
+        if (err) throw err;
+        cellData.emails = result;
+
+    });
+    con.query(sql4, function (err, result) {
+
+        if (err) throw err;
+        cellData.addreses = result;
+        return callback(cellData);
+    });
+}
+
+function insert_customer_id(cId,searched_person_id){
+    let sql = "SELECT * from searched_person where id='"+searched_person_id+"'";
+    con.query(sql, function (err, data) {
+        if (err) throw err;
+       let first_name = data[0].first_name;
+       let  last_name = data[0].last_name;
+       let  email = data[0].email;
+       let  phone = data[0].phone;
+       let sql = "INSERT INTO customer_record(customer_id,searched_person_id,first_name,last_name,email,phone) VALUES ('"+cId+"','"+searched_person_id+"','"+first_name+"','"+last_name+"','"+email+"','"+phone+"')";
+    //    let sql = "INSERT INTO customer_record ("
+    // if(cId!=null) sql+="customer_id,";
+    // if(searched_person_id!=null) sql+="searched_person_id,";
+    // if(first_name!=null) sql+="first_name,";
+    // if(last_name!=null) sql+="last_name,";
+    // if(email!=null ) sql+="email,";
+    // if(phone!=null ) sql+="phone) VALUES (";
+    // if(cId!=null ) sql+="'"+cId+"',";
+    // if(searched_person_id!=null) sql+="'"+searched_person_id+"',";
+    // if(first_name!=null ) sql+="'"+first_name+"',";
+    // if(last_name!=null) sql+="'"+last_name+"',";
+    // if(email!=null) sql+="'"+email+"',";
+    // if(phone!=null) sql+="'"+phone+"')";
+        con.query(sql, function (err, result) {
+            if (err) throw err;
+        });
+    });
+}
+
+
+
 module.exports ={
+    con,
     searchedPerson,
     insert_raw_json_name,
     insert_persons_data,
+    insert_raw_json_cell,
+    insert_cell_data_name,
+    insert_cell_data_dob,
+    insert_cell_data_email,
+    insert_cell_data_address,
     insert_raw_json_phone,
     insert_phone_data,
     insert_raw_json_email,
@@ -642,6 +811,7 @@ module.exports ={
     showPersonsTeasure,
     showEmailTeasure,
     showPhoneTeasure,
+    showPhoneNameTeasure,
     showBirthTeasure,
     showDeathTeasure,
     showMDTeasure,
@@ -653,6 +823,9 @@ module.exports ={
     showDeathData,
     showMDData,
     showCriminalData,
-    getNameWithPhone
-
+    getNameWithPhone,
+    getSearchedId,
+    showCellPhoneTeasure,
+    showCellphoneData,
+    insert_customer_id
 };

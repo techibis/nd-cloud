@@ -1,5 +1,4 @@
 const database = require('./databaseConfig');
-const moment = require('moment');
 
 class Resultrecord{
     constructor (firstName,lastName,middleName,age,state,locations,background,death,marriage,divorce,contact,dataId,database){
@@ -58,7 +57,7 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
                     'N/A',
                     result[i].contact,
                     result[i].id,
-                    'Person'
+                    'P'
                     ));
                 }
 
@@ -86,7 +85,34 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
                     'N/A',
                     result[i].email,
                     result[i].id,
-                    'Email'
+                    'E'
+                    ));
+                }
+            }
+        });
+
+        database.showPhoneNameTeasure(firstName,lastName, function(result){
+            if(result){
+                
+                for (let i=0;i<result.length;i++){
+                    names = checkName(result[i].phone_firstname,result[i].phone_lastname,result[i].phone_middlename,show);
+                    firstName=names.split(",")[0];
+                    lastName =names.split(",")[1];
+                    middleName =names.split(",")[2];
+                    resultData.push(new Resultrecord(
+                    firstName,
+                    lastName,
+                    middleName,
+                    result[i].phone_dob,
+                    result[i].phone_state,
+                    result[i].phone_address,
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    'N/A',
+                    result[i].phone,
+                    result[i].id,
+                    'Ph1'
                     ));
                 }
             }
@@ -112,7 +138,7 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
                     'N/A',
                     'N/A',
                     result[i].id,
-                    'Birth'
+                    'B'
                     ));
                 }
             };
@@ -138,7 +164,7 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
                     'N/A',
                     'N/A',
                     result[i].id,
-                    'Death'
+                    'D'
                     ));
                 }
             };
@@ -190,7 +216,7 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
                     'N/A',
                     'N/A',
                     result[i].id,
-                    'Criminal'
+                    'C'
                     ));
                 }
             };
@@ -201,39 +227,62 @@ function showPersonsDatafromDatabase(firstName,lastName,show,callback){
 
 }
 
-
-
-function showPhoneDataFromDatabase(phone,callback){
+function showPhoneDataFromDatabase(phone, callback) {
     let phoneDatas = new Array();
     let age;
 
     emptyPhoneDataArray(phoneDatas);
-    
-    database.showPhoneTeasure(phone, function(result){
-        if(result){
-            for (let i=0;i<result.length;i++){
-                age = calculateAge(result[i].phone_dob);
 
-                phoneDatas.push(new Resultrecord(
-                result[i].phone_firstname,
-                result[i].phone_lastname,
-                result[i].phone_middlename,
-                age,
-                result[i].phone_state,
-                result[i].phone_address,
+    database.getSearchedId(phone, function (data) {
+        let dataId = '';
+        dataId = data[0].id;
+        database.showCellPhoneTeasure(dataId, function (result) {
+            let contact = result[0].cellPhone + result[0].cell_email;
+            phoneDatas.push(new Resultrecord(
+                result[0].cell_firstName,
+                result[0].cell_lastName,
+                result[0].cell_middleName,
+                result[0].cell_dob,
+                result[0].cell_state,
+                result[0].cell_fullStreet,
                 'N/A',
                 'N/A',
                 'N/A',
                 'N/A',
-                result[i].phone,
-                result[i].id,
-                'Phone'
-                ));
-            }
+                contact,
+                dataId,
+                'CP'
+            ));
+        
+        });
+
+        database.showPhoneTeasure(phone, function (result) {
+            if (result) {
+                for (let i = 0; i < result.length; i++) {
+                    age = calculateAge(result[i].phone_dob);
+    
+                    phoneDatas.push(new Resultrecord(
+                        result[i].phone_firstname,
+                        result[i].phone_lastname,
+                        result[i].phone_middlename,
+                        age,
+                        result[i].phone_state,
+                        result[i].phone_address,
+                        'N/A',
+                        'N/A',
+                        'N/A',
+                        'N/A',
+                        result[i].phone,
+                        result[i].id,
+                        'Ph'
+                    ));
+                };
+            };
             return callback(phoneDatas);
-        }
-    })
-}
+        });
+    });
+
+};
 
 function emptyArray(){
     resultData.length=0;
@@ -279,3 +328,4 @@ module.exports ={
     showPersonsDatafromDatabase,
     showPhoneDataFromDatabase
 };
+
