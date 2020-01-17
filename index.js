@@ -1,8 +1,19 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-// const request = require('request');
+const cookie = require('cookie');
+const nonce = require('nonce')();
+const scopes = 'read_products';
+const request = require('request-promise');
 const app = express();
-const port = process.env.PORT || 9000;
+
+const apiKey = process.env.SHOPIFY_API_KEY;
+const apiSecret = process.env.SHOPIFY_API_SECRET;
+
+const forwardingAddress = "https://sfshopify.com:8001"; // Replace this with your HTTPS Forwarding address
+const fs = require('fs');
+const http = require('http');
+const https = require("https");
 
 const database = require('./databaseConfig');
 const getPersonData = require('./searchByName');
@@ -20,14 +31,31 @@ let phoneApiArray = {phone:0,cell:0};
 let counter =0;
 let interval;
 
-app.get('/', function (req, res) {
-    res.render('index', {data: null, error: null});
-})
 
-app.post('/', function (req, res) {
+app.get('/', (req, res) => {
+  const shop = req.query.shop;
+  if (shop) {
+    const state = nonce();
+    const redirectUri = forwardingAddress;
+    const installUrl = 'https://' + shop +
+      '/admin/oauth/authorize?client_id=' + apiKey +
+      '&scope=' + scopes +
+      '&state=' + state +
+      '&redirect_uri=' + redirectUri;
 
-    let firstName = req.body.firstName;
-    let lastName = req.body.lastName;
+    res.cookie('state', state);
+    res.redirect(installUrl);
+  } else {
+    return res.status(400).send('Missing shop parameter. Please add ?shop=your-development-shop.myshopify.com to your query');
+  }
+});
+
+
+app.post('/', (req, res) => {
+    const shop = req.query.shop;
+    const  firstName = req.query.firstName;
+    const lastName = req.query.lastName;
+    if (shop) {
 
     database.findNameInDatabase(firstName,lastName,function(result){
         
@@ -40,19 +68,21 @@ app.post('/', function (req, res) {
     })
 
     interval = setInterval(function(){checkIfDone(firstName,lastName,res,1)}, 200);
-
+}
 });
 
 
-app.get('/email', function (req, res) {
-    res.render('searchByEmail', {emailData: null, error: null});
-})
+//app.get('/email', function (req, res) {
+  //  res.render('searchByEmail', {emailData: null, error: null});
+//})
 
   
 app.post('/email', function (req, res) {
-    let email = req.body.email;
+    const shop = req.query.shop;
+    const email = req.query.email;
     let emailData_firstName;
     let emailData_lastName;
+    if (shop) {
 
     database.findEmailInDatabase(email, function(response){
 
@@ -85,20 +115,22 @@ app.post('/email', function (req, res) {
         emailApiInterval = setInterval(function(){checkIfEmailApiCallDone(emailData_firstName,emailData_lastName,res)}, 200);
 
 
-    })
-
+    });
+}
 
 });
   
 
 
-app.get('/phone', function (req, res) {
-    res.render('searchByPhone', {phoneData: null, error: null});
-})
+//app.get('/phone', function (req, res) {
+ //   res.render('searchByPhone', {phoneData: null, error: null});
+//})
   
 app.post('/phone', function (req, res) {
 
-    let phone = req.body.phoneNumber;
+	const shop = req.query.shop;
+    	const phone = req.query.phoneNumber;
+    if (shop) {
 
     database.findPhoneInDatabase(phone, function(response){
         if (response.length == 0) {
@@ -109,50 +141,64 @@ app.post('/phone', function (req, res) {
             phoneApiArray.cell = 1;
         }
         phoneApiInterval = setInterval(function(){checkIfPhoneApiCallDone(phone,res)}, 200);
-    })
-})
+    });
+};
+});
 
 
-app.get('/Person/:id', function (req, res) {
+app.post('/P/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
+    let searched_person_id;  
     database.showPersonsData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
+    searched_person_id = data[0].searched_person_id;        
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,searched_person_id);
+        }
+        return res.status(200).send(data);
     })
 })
 
 
-app.get('/Email/:id', function (req, res) {
+app.post('/E/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
     database.showEmailData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,id);
+        }
+        return res.status(200).send(data);
     })
 })
 
-app.get('/CellPhone/:id', function (req, res) {
+app.post('/CP/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
     database.showCellphoneData(id,function(data){
-
-        let data_str;
-        data_str=JSON.stringify(data);
-        res.render('cellPhoneData', {data: data_str, error: null});
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,id);
+        }
+        return res.status(200).send(data);
       })
 
 })
 
 
-app.get('/Phone/:id', function (req, res) {
+app.post('/Ph/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
     let firstName;
     let lastName;
+    let searched_person_id;
 
     database.getNameWithPhone(id,function(response){
         firstName = response[0].phone_firstname;
         lastName = response[0].phone_lastname;
+        searched_person_id = response[0].searched_person_id;
 
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,searched_person_id);
+        }
 
         database.findNameInDatabase(firstName,lastName,function(result){
             
@@ -164,110 +210,86 @@ app.get('/Phone/:id', function (req, res) {
             }
         })
 
-
         interval = setInterval(function(){checkIfDone(firstName,lastName,res)}, 200);
     });
 });
 
-app.get('/Phone/Person/:id', function (req, res) {
-    let id = req.params.id;
-    database.showPersonsData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
-    })
-})
 
-app.get('/Phone/Phone/:id', function (req, res) {
+app.post('/Ph1/:id', function (req, res) {
     let id = req.params.id;
     database.showPhoneData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
+        return res.status(200).send(data);
     })
 })
 
-app.get('/Phone/Birth/:id', function (req, res) {
+
+app.post('/B/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
     database.showBirthData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,id);
+        }
+        return res.status(200).send(data);
     })
 })
 
-app.get('/Phone/Death/:id', function (req, res) {
+
+app.post('/D/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
     database.showDeathData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,id);
+        }
+        return res.status(200).send(data);
     })
 })
 
-app.get('/Phone/MD/:id', function (req, res) {
+
+app.post('/MD/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
     database.showMDData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,id);
+        }
+        return res.status(200).send(data);
     })
 })
 
-app.get('/Phone/Criminal/:id', function (req, res) {
+
+app.post('/C/:id/:cId', function (req, res) {
     let id = req.params.id;
+    let cId = req.params.cId;
     database.showCriminalData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
+        if ((cId = null)&&(cId = 'null')&&(cId = '')){
+            database.insert_customer_id(cId,id);
+        }
+        return res.status(200).send(data);
     })
 })
 
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/sfshopify.com/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/sfshopify.com/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/sfshopify.com/chain.pem', 'utf8');
 
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
 
-app.get('/Birth/:id', function (req, res) {
-    let id = req.params.id;
-    database.showBirthData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
-    })
-})
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 
+httpServer.listen(8000, () => {
+	console.log('Net Detective App listening on port 8000 for HTTP Server');
+});
 
-app.get('/Death/:id', function (req, res) {
-    let id = req.params.id;
-    database.showDeathData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
-    })
-})
-
-
-app.get('/MD/:id', function (req, res) {
-    let id = req.params.id;
-    database.showMDData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
-    })
-})
-
-
-app.get('/Criminal/:id', function (req, res) {
-    let id = req.params.id;
-    database.showCriminalData(id,function(data){
-      let data_str;
-      data_str=JSON.stringify(data);
-      res.render('singlePersonData', {data: data_str, error: null});
-    })
-})
-
-app.listen(port, function(){
-    console.log("Net Detective App Listening to Port 9000");
-})
-
+httpsServer.listen(8001, () => {
+	console.log('Net Detective  App listening on port 8001 for HTTPS Server');
+});
 
 function checkIfDone(firstName,lastName,res,show) { 
     counter +=1;
@@ -276,7 +298,7 @@ function checkIfDone(firstName,lastName,res,show) {
         stopApiInterval(interval);
         
         showResult.showPersonsDatafromDatabase(firstName,lastName,show,function(result){
-            res.render('teasure', {data:result}); 
+		return res.status(200).send(result);
         });
     };
 
@@ -289,7 +311,7 @@ function checkIfPhoneApiCallDone(phone,res) {
     if ((phoneApiArray.phone)+(phoneApiArray.cell) === 2 || (phoneCounter===20)){
         stopPhoneApiInterval();
         showResult.showPhoneDataFromDatabase (phone,function(result){
-            res.render('teasure', {data:result}); 
+ 		return res.status(200).send(result);
         });
     };
 
@@ -303,7 +325,7 @@ function checkIfEmailApiCallDone(emailData_firstName,emailData_lastName,res) {
         if (emailData_firstName !=null && emailData_lastName !=null ){
             interval = setInterval(function(){checkIfDone(emailData_firstName,emailData_lastName,res,0)}, 200);
         }else{
-            res.render('teasure', {data:''}); 
+            return res.status(200).send(""); 
         }
     };
 
@@ -334,6 +356,7 @@ function setApiArrayValues(){
     apiArray.divorce = 1;
 }
 
+
 const countApi =require('./countApiCall');
 
 app.post('/count',function (req, res) {
@@ -344,78 +367,28 @@ app.post('/count',function (req, res) {
     });
 });
 
-// app.post('/Ph/P/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showPersonsData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
+app.post('/report',function (req, res) {
+    let cId = req.query.cId;
+    database.showReport(cId,function(data){
+        return res.status(200).send(data);
+    });
+});
 
-// app.post('/Ph/Ph/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showPhoneData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
+app.post('/limit',function (req, res) {
+   database.getApiLimit(function(data){
+        return res.status(200).send(data);
+    });
+});
 
-// app.post('/Ph/B/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showBirthData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
+app.post('/setApiLimit',function (req, res) {
+    let id = req.query.apiLimitId;
+    let call_limit = req.query.apiLimit;
+    database.setApiLimit(id,call_limit);
+});
 
-// app.post('/Ph/D/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showDeathData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
-
-// app.post('/Ph/MD/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showMDData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
-
-// app.post('/Ph/C/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showCriminalData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
-
-
-
-// app.post('/B/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showBirthData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
-
-
-// app.post('/D/:id', function (req, res) {
-//     let id = req.params.id;
-//     database.showDeathData(id,function(data){
-//       //let data_str;
-//       //data_str=JSON.stringify(data);
-//         return res.status(200).send(data);
-//     })
-// })
-
+app.post('/checkLimit',function (req, res) {
+    let id = req.query.cId;
+    database.checkLimit(id,function(data){
+        return res.status(200).send(data);
+    });
+});

@@ -751,33 +751,66 @@ function showCellphoneData(id, callback){
 }
 
 function insert_customer_id(cId,searched_person_id){
-    let sql = "SELECT * from searched_person where id='"+searched_person_id+"'";
-    con.query(sql, function (err, data) {
+    let sql = "SELECT * from customer_record where customer_id='"+cId+"' and searched_person_id = '"+searched_person_id+"'";
+    con.query(sql, function (err, result) {
         if (err) throw err;
-       let first_name = data[0].first_name;
-       let  last_name = data[0].last_name;
-       let  email = data[0].email;
-       let  phone = data[0].phone;
-       let sql = "INSERT INTO customer_record(customer_id,searched_person_id,first_name,last_name,email,phone) VALUES ('"+cId+"','"+searched_person_id+"','"+first_name+"','"+last_name+"','"+email+"','"+phone+"')";
-    //    let sql = "INSERT INTO customer_record ("
-    // if(cId!=null) sql+="customer_id,";
-    // if(searched_person_id!=null) sql+="searched_person_id,";
-    // if(first_name!=null) sql+="first_name,";
-    // if(last_name!=null) sql+="last_name,";
-    // if(email!=null ) sql+="email,";
-    // if(phone!=null ) sql+="phone) VALUES (";
-    // if(cId!=null ) sql+="'"+cId+"',";
-    // if(searched_person_id!=null) sql+="'"+searched_person_id+"',";
-    // if(first_name!=null ) sql+="'"+first_name+"',";
-    // if(last_name!=null) sql+="'"+last_name+"',";
-    // if(email!=null) sql+="'"+email+"',";
-    // if(phone!=null) sql+="'"+phone+"')";
-        con.query(sql, function (err, result) {
-            if (err) throw err;
-        });
+        if((result.length<1)){
+            let sql = "SELECT * from searched_person where id='"+searched_person_id+"'";
+            con.query(sql, function (err, data) {
+                if (err) throw err;
+               let first_name = data[0].first_name;
+               let  last_name = data[0].last_name;
+               let  email = data[0].email;
+               let  phone = data[0].phone;
+               let sql = "INSERT INTO customer_record(customer_id,searched_person_id,first_name,last_name,email,phone) VALUES ('"+cId+"','"+searched_person_id+"','"+first_name+"','"+last_name+"','"+email+"','"+phone+"')";
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                });
+            });
+        };
     });
 }
 
+function showReport(cId,callback){
+    let sql = "SELECT * from customer_record where customer_id='"+cId+"'";
+    con.query(sql, function (err, data) {
+        if (err) throw err;
+        return callback(data);
+    });
+}
+
+function getApiLimit(callback){
+    let sql = "SELECT * from api_call_limit";
+    con.query(sql,function (err, result) {
+        return callback(result);
+    })
+}
+
+function setApiLimit(apiLimitId, apiLimit){
+    let sql = "UPDATE api_call_limit SET call_limit = '"+apiLimit+"' where id='"+apiLimitId+"'";
+    con.query(sql, function (err, result) {
+    if (err) {throw err;}
+    });
+}
+
+function checkLimit(cId, callback){
+    let limitArray ={total:0,limit:0};
+    let totalSql = "SELECT COUNT(id) as total FROM `customer_record` WHERE MONTH(time)=MONTH(NOW()) and YEAR(time) = YEAR(NOW()) and customer_id = "+cId+"";
+    let limitSql =  "SELECT * from api_call_limit where id = 1";
+
+    con.query(totalSql, function (err, result) {
+        if (err) throw err;
+        value = result[0].total;
+        limitArray.total = value;
+    });
+
+    con.query(limitSql, function (err, result) {
+        if (err) throw err;
+        value = result[0].call_limit;
+        limitArray.limit = value;
+        return callback(limitArray);
+    });
+}
 
 
 module.exports ={
@@ -827,5 +860,9 @@ module.exports ={
     getSearchedId,
     showCellPhoneTeasure,
     showCellphoneData,
-    insert_customer_id
+    insert_customer_id,
+    showReport,
+    getApiLimit,
+    setApiLimit,
+    checkLimit
 };
